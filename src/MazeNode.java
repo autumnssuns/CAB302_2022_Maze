@@ -100,26 +100,18 @@ public class MazeNode {
         if (this.row == other.getRow() && this.col + 1 == other.getCol()) {
             setRight(other);
             other.setLeft(this);
-            this.getAttachedButton().setText("L");
-            other.getAttachedButton().setText("R");
         }
         if (this.row == other.getRow() && this.col - 1 == other.getCol()) {
             setLeft(other);
             other.setRight(this);
-            this.getAttachedButton().setText("R");
-            other.getAttachedButton().setText("L");
         }
         if (this.row + 1 == other.getRow() && this.col == other.getCol()) {
             setBottom(other);
             other.setTop(this);
-            this.getAttachedButton().setText("T");
-            other.getAttachedButton().setText("B");
         }
         if (this.row - 1 == other.getRow() && this.col == other.getCol()) {
             setTop(other);
             other.setBottom(this);
-            this.getAttachedButton().setText("B");
-            other.getAttachedButton().setText("T");
         }
     }
 }

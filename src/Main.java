@@ -20,6 +20,7 @@ public class Main {
 
     public static void createMazeView(int rows, int cols){
         view.addMazeView(rows, cols);
+        view.requestFocus();
     }
 
     public static void deleteMazeView(View view){

@@ -2,6 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -19,6 +21,7 @@ public class MazePartialView extends JPanel implements ActionListener {
     private int rows, cols;
     private final View container;
     private Maze maze;
+    private MazeNode current;
 
     public MazePartialView (View container, int rows, int cols){
         this.container = container;
@@ -33,6 +36,7 @@ public class MazePartialView extends JPanel implements ActionListener {
         nodeButtons = new ArrayList<>();
         hButtons = new ArrayList<>();
         vButtons = new ArrayList<>();
+        current = maze.getRoot();
     }
 
     public void render(){
@@ -103,14 +107,6 @@ public class MazePartialView extends JPanel implements ActionListener {
         }
         nodeButtons.forEach(NodeButton::connectAll);
 
-//        nodeButtons.forEach(NodeButton::toggleAll);
-//        hButtons.forEach(x -> {
-//            if (new Random().nextBoolean()) x.action();
-//        });
-//        vButtons.forEach(x -> {
-//            if (new Random().nextBoolean()) x.action();
-//        });
-
         maze.disconnectAll();
 
         maze.generate();
@@ -118,8 +114,34 @@ public class MazePartialView extends JPanel implements ActionListener {
         nodeButtons.forEach(NodeButton::repaintWalls);
 
         maze.getRoot().getAttachedButton().setText("R");
+        current.getAttachedButton().setBackground(Color.RED);
 
         setVisible(true);
+    }
+
+    public void move(int keyCode){
+        switch (keyCode){
+            case KeyEvent.VK_UP -> {
+                current.getAttachedButton().setBackground(Color.WHITE);
+                current = current.getTop() != null ? current.getTop() : current;
+                current.getAttachedButton().setBackground(Color.RED);
+            }
+            case KeyEvent.VK_DOWN -> {
+                current.getAttachedButton().setBackground(Color.WHITE);
+                current = current.getBottom() != null ? current.getBottom() : current;
+                current.getAttachedButton().setBackground(Color.RED);
+            }
+            case KeyEvent.VK_LEFT -> {
+                current.getAttachedButton().setBackground(Color.WHITE);
+                current = current.getLeft() != null ? current.getLeft() : current;
+                current.getAttachedButton().setBackground(Color.RED);
+            }
+            case KeyEvent.VK_RIGHT -> {
+                current.getAttachedButton().setBackground(Color.WHITE);
+                current = current.getRight() != null ? current.getRight() : current;
+                current.getAttachedButton().setBackground(Color.RED);
+            }
+        }
     }
 
     public void clear(){

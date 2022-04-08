@@ -1,13 +1,17 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
-public class View extends JFrame {
+public class View extends JFrame implements KeyListener {
     private MazePartialView mazePartialView;
 
     public View(){
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setUndecorated(true);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setFocusable(true);
+        addKeyListener(this);
     }
 
     public void addLabel(){
@@ -40,5 +44,21 @@ public class View extends JFrame {
 
     public void toggleMazeGrid(boolean state){
         mazePartialView.toggleGrid(state);
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        mazePartialView.move(e.getKeyCode());
+
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+
     }
 }
