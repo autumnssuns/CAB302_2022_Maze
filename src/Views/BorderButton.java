@@ -1,3 +1,5 @@
+package Views;
+
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import java.awt.*;
@@ -57,6 +59,5 @@ public class BorderButton extends JButton {
     public void updateBorder(){
         setBackground(this.closed ? Color.BLACK : Color.WHITE);
         setOpaque(closed);
-//        setBorderPainted(!state);
     }
 }

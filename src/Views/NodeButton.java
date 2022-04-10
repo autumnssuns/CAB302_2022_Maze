@@ -1,7 +1,9 @@
+package Views;
+
+import Models.MazeNode;
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -44,7 +46,7 @@ public class NodeButton extends JButton {
 
     public void changeColour(Color color, ArrayList<MazeNode> visitedNodes){
         final Color finalColor = color;
-        int delay = 30;
+        int delay = 0;
         Timer timer = new Timer( delay, e -> {
             float r = finalColor.getRed() / 255f * 0.99f;
             float g = finalColor.getGreen() / 255f * 0.99f;

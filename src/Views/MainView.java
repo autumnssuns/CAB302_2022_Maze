@@ -1,17 +1,24 @@
+package Views;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-public class View extends JFrame implements KeyListener {
+public class MainView extends JFrame implements KeyListener, Runnable {
     private MazePartialView mazePartialView;
 
-    public View(){
+    public void createGUI(){
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setUndecorated(true);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setFocusable(true);
         addKeyListener(this);
+
+        getContentPane().setLayout(new BorderLayout());
+        addLabel();
+        addMenu();
+        setVisible(true);
     }
 
     public void addLabel(){
@@ -34,7 +41,6 @@ public class View extends JFrame implements KeyListener {
             mazePartialView.setSize(rows, cols);
         }
         mazePartialView.render();
-//        mazePartialView.shift(0, 20);
         setVisible(true);
     }
 
@@ -53,12 +59,16 @@ public class View extends JFrame implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        mazePartialView.move(e.getKeyCode());
-
+        if (mazePartialView != null) mazePartialView.move(e.getKeyCode());
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
 
+    }
+
+    @Override
+    public void run() {
+        createGUI();
     }
 }

@@ -1,11 +1,13 @@
+package Views;
+
+import Models.*;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.util.ArrayList;
-import java.util.Random;
 
 public class MazePartialView extends JPanel implements ActionListener {
     private static int weight;
@@ -19,11 +21,11 @@ public class MazePartialView extends JPanel implements ActionListener {
     private ArrayList<NodeButton> nodeButtons;
 
     private int rows, cols;
-    private final View container;
+    private final MainView container;
     private Maze maze;
     private MazeNode current;
 
-    public MazePartialView (View container, int rows, int cols){
+    public MazePartialView (MainView container, int rows, int cols){
         this.container = container;
         setSize(rows, cols);
 //        setSize(55 * cols, 55 * rows);

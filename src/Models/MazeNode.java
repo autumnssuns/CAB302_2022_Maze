@@ -1,3 +1,7 @@
+package Models;
+
+import Views.NodeButton;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -56,28 +60,24 @@ public class MazeNode {
         return this;
     }
 
-    public MazeNode setLeft(MazeNode node){
+    public void setLeft(MazeNode node){
         left = node;
         neighbours.put("left", left);
-        return this;
     }
 
-    public MazeNode setRight(MazeNode node){
+    public void setRight(MazeNode node){
         right = node;
         neighbours.put("right", right);
-        return this;
     }
 
-    public MazeNode setTop(MazeNode node){
+    public void setTop(MazeNode node){
         top = node;
         neighbours.put("top", top);
-        return this;
     }
 
-    public MazeNode setBottom(MazeNode node){
+    public void setBottom(MazeNode node){
         bottom = node;
         neighbours.put("bottom", bottom);
-        return this;
     }
 
     public MazeNode getLeft() {
@@ -94,6 +94,25 @@ public class MazeNode {
 
     public MazeNode getBottom() {
         return bottom;
+    }
+
+    public void disconnect(MazeNode other){
+        if (this.row == other.getRow() && this.col + 1 == other.getCol()) {
+            setRight(null);
+            other.setLeft(null);
+        }
+        if (this.row == other.getRow() && this.col - 1 == other.getCol()) {
+            setLeft(null);
+            other.setRight(null);
+        }
+        if (this.row + 1 == other.getRow() && this.col == other.getCol()) {
+            setBottom(null);
+            other.setTop(null);
+        }
+        if (this.row - 1 == other.getRow() && this.col == other.getCol()) {
+            setTop(null);
+            other.setBottom(null);
+        }
     }
 
     public void connect(MazeNode other){

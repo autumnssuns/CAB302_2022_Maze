@@ -1,9 +1,17 @@
-import java.util.ArrayList;
+package Models;
 
-public class Maze{
-    private MazeNode root;
+import Generators.Generator;
+import Generators.GeneratorFactory;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Spliterator;
+import java.util.function.Consumer;
+
+public class Maze implements Iterable<MazeNode>{
+    private final MazeNode root;
     private MazeNode destination;
-    private ArrayList<ArrayList<MazeNode>> nodes;
+    private final ArrayList<ArrayList<MazeNode>> nodes;
     private int cols, rows;
     private Generator generator;
 
@@ -24,8 +32,11 @@ public class Maze{
                 nodes.get(i).add(node);
             }
         }
-        this.generator = new Generator(this);
-        connectAll();
+
+        GeneratorFactory factory = new GeneratorFactory(this);
+        this.generator = factory.create(GeneratorFactory.RECURSIVE_DIVISION);
+
+//        connectAll();
     }
 
     public void generate(){
@@ -56,22 +67,16 @@ public class Maze{
         }
     }
 
-    public int getNodeCount(){
-        return cols * rows;
-    }
-
     public int getSize(){
         return cols * rows;
     }
 
     public int getSize(int dimension){
-        switch (dimension){
-            case 0:
-                return rows;
-            case 1:
-                return cols;
-        }
-        return -1;
+        return switch (dimension) {
+            case 0 -> rows;
+            case 1 -> cols;
+            default -> -1;
+        };
     }
 
     public MazeNode getRoot() {
@@ -99,5 +104,32 @@ public class Maze{
 
     public MazeNode get(int row, int col){
         return nodes.get(row).get(col);
+    }
+
+    @Override
+    public Iterator<MazeNode> iterator() {
+        return new Iterator<>() {
+            private int idx = 0;
+
+            @Override
+            public boolean hasNext() {
+                return idx < getSize() && get(idx) != null;
+            }
+
+            @Override
+            public MazeNode next() {
+                return get(idx++);
+            }
+        };
+    }
+
+    @Override
+    public void forEach(Consumer action) {
+        Iterable.super.forEach(action);
+    }
+
+    @Override
+    public Spliterator spliterator() {
+        return Iterable.super.spliterator();
     }
 }
