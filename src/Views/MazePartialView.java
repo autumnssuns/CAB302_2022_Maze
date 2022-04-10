@@ -1,5 +1,6 @@
 package Views;
 
+import Generators.GeneratorFactory;
 import Models.*;
 
 import javax.swing.*;
@@ -39,6 +40,10 @@ public class MazePartialView extends JPanel implements ActionListener {
         hButtons = new ArrayList<>();
         vButtons = new ArrayList<>();
         current = maze.getRoot();
+    }
+
+    public void setGenerator(int generatorType){
+        maze.setGenerator(generatorType);
     }
 
     public void render(){

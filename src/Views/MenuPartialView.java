@@ -1,5 +1,7 @@
 package Views;
 
+import Generators.GeneratorFactory;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,6 +16,7 @@ public class MenuPartialView extends JPanel implements ActionListener {
     private final JSpinner rowsInput, colsInput;
     private final JButton createButton, deleteButton, exportButton;
     private final JCheckBox showGridCheckbox;
+    private final JComboBox algorithmSelectionComboBox;
     private final MainView view;
 
     public MenuPartialView(MainView container){
@@ -23,7 +26,9 @@ public class MenuPartialView extends JPanel implements ActionListener {
         layout.setAutoCreateContainerGaps(true);
         setLayout(layout);
 
-        JLabel label = new JLabel("Models.Maze Size");
+        JLabel sizeLabel = new JLabel("Maze Size");
+        JLabel algorithmLabel = new JLabel("Algorithm");
+
         rowsInput = new JSpinner(new MazeSizeSpinnerModel());
         colsInput = new JSpinner(new MazeSizeSpinnerModel());
         createButton = new JButton("Create");
@@ -46,12 +51,19 @@ public class MenuPartialView extends JPanel implements ActionListener {
             view.toggleMazeGrid(state);
         });
 
+        algorithmSelectionComboBox = new JComboBox<>(GeneratorFactory.ALGORITHMS);
+        algorithmSelectionComboBox.setSelectedIndex(0);
+
         layout.setHorizontalGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup()
-                        .addComponent(label)
+                        .addComponent(sizeLabel)
+                        .addComponent(algorithmLabel)
                         .addComponent(showGridCheckbox))
-                .addComponent(rowsInput)
-                .addComponent(colsInput)
+                .addGroup(layout.createParallelGroup()
+                        .addComponent(algorithmSelectionComboBox)
+                        .addGroup(layout.createSequentialGroup()
+                                .addComponent(rowsInput)
+                                .addComponent(colsInput)))
                 .addGroup(layout.createParallelGroup()
                         .addGroup(layout.createSequentialGroup()
                                 .addComponent(createButton)
@@ -60,14 +72,17 @@ public class MenuPartialView extends JPanel implements ActionListener {
 
         layout.setVerticalGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                        .addComponent(label)
+                        .addComponent(sizeLabel)
                         .addComponent(rowsInput)
                         .addComponent(colsInput)
                         .addComponent(createButton)
                         .addComponent(deleteButton))
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                        .addComponent(showGridCheckbox)
-                        .addComponent(exportButton)));
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                        .addComponent(algorithmLabel)
+                        .addComponent(algorithmSelectionComboBox)
+                        .addComponent(exportButton))
+                .addComponent(showGridCheckbox)
+        );
     }
 
 //    public Views.MenuPartialView(Views.View container){
@@ -107,6 +122,8 @@ public class MenuPartialView extends JPanel implements ActionListener {
             case "Create" -> {
 //                Main.createMazeView(getRows(), getColumns());
                 view.addMazeView(getRows(), getColumns());
+                view.setMazeGenerator(algorithmSelectionComboBox.getSelectedIndex());
+                view.renderMazeView();
                 view.requestFocus();
                 view.toggleMazeGrid(showGridCheckbox.getModel().isSelected());
                 deleteButton.setEnabled(true);

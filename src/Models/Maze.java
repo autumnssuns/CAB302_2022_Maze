@@ -20,6 +20,11 @@ public class Maze implements Iterable<MazeNode>{
         nodes = new ArrayList<>();
     }
 
+    public void setGenerator(int generatorType){
+        GeneratorFactory factory = new GeneratorFactory(this);
+        this.generator = factory.create(generatorType);
+    }
+
     public Maze(int rows, int cols){
         this();
         this.cols = cols;
@@ -31,12 +36,7 @@ public class Maze implements Iterable<MazeNode>{
                 node.setCoordinate(i,j);
                 nodes.get(i).add(node);
             }
-        }
-
-        GeneratorFactory factory = new GeneratorFactory(this);
-        this.generator = factory.create(GeneratorFactory.RECURSIVE_DIVISION);
-
-//        connectAll();
+        }//        connectAll();
     }
 
     public void generate(){

@@ -40,8 +40,11 @@ public class MainView extends JFrame implements KeyListener, Runnable {
         } else {
             mazePartialView.setSize(rows, cols);
         }
-        mazePartialView.render();
         setVisible(true);
+    }
+
+    public void setMazeGenerator(int generatorType){
+        mazePartialView.setGenerator(generatorType);
     }
 
     public void clearMazeView(){
@@ -70,5 +73,9 @@ public class MainView extends JFrame implements KeyListener, Runnable {
     @Override
     public void run() {
         createGUI();
+    }
+
+    public void renderMazeView() {
+        mazePartialView.render();
     }
 }

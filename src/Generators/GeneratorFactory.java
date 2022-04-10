@@ -3,6 +3,12 @@ package Generators;
 import Models.Maze;
 
 public record GeneratorFactory(Maze maze) {
+    public static final String[] ALGORITHMS = {
+            "Depth first traversal",
+            "Aldous-Broder",
+            "Recursive Division"
+    };
+
     public static final int DEPTH_FIRST_TRAVERSAL = 0;
     public static final int ALDOUS_BRODER = 1;
     public static final int RECURSIVE_DIVISION = 2;
