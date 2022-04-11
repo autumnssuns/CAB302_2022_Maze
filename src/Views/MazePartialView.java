@@ -28,6 +28,7 @@ public class MazePartialView extends JPanel implements ActionListener {
 
     public MazePartialView (MainView container, int rows, int cols){
         this.container = container;
+        this.setBackground(Color.WHITE);
         setSize(rows, cols);
 //        setSize(55 * cols, 55 * rows);
     }
@@ -52,10 +53,12 @@ public class MazePartialView extends JPanel implements ActionListener {
         horizontalSize = new Dimension(size + weight, weight);
         verticalSize = new Dimension(weight, size + weight);
         setLayout(null);
+        int x = 0, y = 0;
+
         for (int i = 0; i <= cols; i++){
             for (int j = 0; j < rows; j++){
-                int x = size * i;
-                int y = size * j;
+                x = size * i;
+                y = size * j;
 
                 BorderButton buttonVertical = new BorderButton(this);
                 buttonVertical.setBounds(x, y, verticalSize.width, verticalSize.height);
@@ -66,11 +69,12 @@ public class MazePartialView extends JPanel implements ActionListener {
                 add(buttonVertical);
             }
         }
+        int maxHeight = y + verticalSize.height;
 
         for (int i = 0; i < cols; i++){
             for (int j = 0; j <= rows; j++){
-                int x = size * i;
-                int y = size * j;
+                x = size * i;
+                y = size * j;
 
                 BorderButton buttonHorizontal = new BorderButton(this);
                 buttonHorizontal.setBounds(x, y, horizontalSize.width, horizontalSize.height);
@@ -81,6 +85,8 @@ public class MazePartialView extends JPanel implements ActionListener {
                 add(buttonHorizontal);
             }
         }
+
+        int maxWidth = x + horizontalSize.width;
 
         for (int i = 0; i < rows; i++){
             for (int j = 0; j < cols; j++){
@@ -123,6 +129,9 @@ public class MazePartialView extends JPanel implements ActionListener {
         maze.getRoot().getAttachedButton().setText("R");
         current.getAttachedButton().setBackground(Color.RED);
 
+        setPreferredSize(new Dimension(maxWidth, maxHeight));
+        setMaximumSize(new Dimension(maxWidth, maxHeight));
+        setMinimumSize(new Dimension(maxWidth, maxHeight));
         setVisible(true);
     }
 
