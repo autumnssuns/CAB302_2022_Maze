@@ -30,7 +30,10 @@ public class MainView extends JFrame implements KeyListener, Runnable {
 
     public void addMenu(){
         MenuPartialView menuPartialView = new MenuPartialView(this);
-        getContentPane().add(menuPartialView, BorderLayout.LINE_START);
+        JPanel emptyPanel = new JPanel();
+
+        JSplitPane container = new JSplitPane(JSplitPane.VERTICAL_SPLIT, menuPartialView, emptyPanel);
+        getContentPane().add(container, BorderLayout.LINE_START);
     }
 
     public void addMazeView(int rows, int cols){

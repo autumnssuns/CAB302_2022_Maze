@@ -3,6 +3,7 @@ package Views;
 import Generators.GeneratorFactory;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -17,6 +18,8 @@ public class MenuPartialView extends JPanel implements ActionListener {
     private final JButton createButton, deleteButton, exportButton;
     private final JCheckBox showGridCheckbox;
     private final JComboBox algorithmSelectionComboBox;
+    private final JTextField mazeNameTextField, authornameTextField;
+    private final JTextArea descriptionTextArea;
     private final MainView view;
 
     public MenuPartialView(MainView container){
@@ -28,6 +31,7 @@ public class MenuPartialView extends JPanel implements ActionListener {
 
         JLabel sizeLabel = new JLabel("Maze Size");
         JLabel algorithmLabel = new JLabel("Algorithm");
+        JLabel detailsLabel = new JLabel("Details");
 
         rowsInput = new JSpinner(new MazeSizeSpinnerModel());
         colsInput = new JSpinner(new MazeSizeSpinnerModel());
@@ -54,57 +58,60 @@ public class MenuPartialView extends JPanel implements ActionListener {
         algorithmSelectionComboBox = new JComboBox<>(GeneratorFactory.ALGORITHMS);
         algorithmSelectionComboBox.setSelectedIndex(0);
 
-        layout.setHorizontalGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup()
-                        .addComponent(sizeLabel)
-                        .addComponent(algorithmLabel)
-                        .addComponent(showGridCheckbox))
-                .addGroup(layout.createParallelGroup()
-                        .addComponent(algorithmSelectionComboBox)
-                        .addGroup(layout.createSequentialGroup()
-                                .addComponent(rowsInput)
-                                .addComponent(colsInput)))
-                .addGroup(layout.createParallelGroup()
-                        .addGroup(layout.createSequentialGroup()
-                                .addComponent(createButton)
-                                .addComponent(deleteButton))
-                        .addComponent(exportButton)));
+        mazeNameTextField = new PromptTextField("Maze Name");
+        authornameTextField = new PromptTextField("Author Name");
+        descriptionTextArea = new PromptTextArea("Description");
+        descriptionTextArea.setLineWrap(true);
+
+        layout.linkSize(SwingConstants.VERTICAL, mazeNameTextField, authornameTextField, algorithmSelectionComboBox);
+        layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                .addComponent(sizeLabel)
+                                .addComponent(algorithmLabel)
+                                .addComponent(detailsLabel)
+                        )
+                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createSequentialGroup()
+                                        .addComponent(rowsInput)
+                                        .addComponent(colsInput)
+                                )
+                                .addComponent(algorithmSelectionComboBox)
+                        )
+                )
+                .addComponent(mazeNameTextField)
+                .addComponent(authornameTextField)
+                .addComponent(descriptionTextArea, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createSequentialGroup()
+                        .addComponent(exportButton)
+                        .addComponent(deleteButton)
+                        .addComponent(createButton)
+                )
+                .addComponent(showGridCheckbox)
+        );
 
         layout.setVerticalGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                         .addComponent(sizeLabel)
                         .addComponent(rowsInput)
                         .addComponent(colsInput)
-                        .addComponent(createButton)
-                        .addComponent(deleteButton))
+                )
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                         .addComponent(algorithmLabel)
                         .addComponent(algorithmSelectionComboBox)
-                        .addComponent(exportButton))
+                )
+                .addComponent(detailsLabel)
+                .addComponent(mazeNameTextField)
+                .addComponent(authornameTextField)
+                .addComponent(descriptionTextArea, 100, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                        .addComponent(createButton)
+                        .addComponent(deleteButton)
+                        .addComponent(exportButton)
+                )
                 .addComponent(showGridCheckbox)
         );
     }
-
-//    public Views.MenuPartialView(Views.View container){
-//        this.container = container;
-//        setLayout(new FlowLayout());
-//
-//        JLabel label = new JLabel("Models.Maze Size");
-//        rowsInput = new JSpinner(new MazeSizeSpinnerModel());
-//        colsInput = new JSpinner(new MazeSizeSpinnerModel());
-//        createButton = new JButton("Create");
-//        createButton.addActionListener(this);
-//
-//        deleteButton = new JButton("Delete");
-//        deleteButton.addActionListener(this);
-//        deleteButton.setEnabled(false);
-//
-//        add(label);
-//        add(rowsInput);
-//        add(colsInput);
-//        add(createButton);
-//        add(deleteButton);
-//    }
 
     public int getRows(){
         return (int) rowsInput.getValue();
