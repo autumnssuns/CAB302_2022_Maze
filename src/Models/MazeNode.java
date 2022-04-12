@@ -133,4 +133,8 @@ public class MazeNode {
             other.setBottom(this);
         }
     }
+
+    public boolean hasNeighbour(MazeNode other){
+        return neighbours.containsValue(other);
+    }
 }

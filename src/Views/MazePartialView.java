@@ -7,6 +7,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.geom.Line2D;
 import java.util.ArrayList;
 
 public class MazePartialView extends JPanel implements ActionListener {
@@ -16,12 +17,12 @@ public class MazePartialView extends JPanel implements ActionListener {
     private ArrayList<NodeButton> nodeButtons;
 
     private int rows, cols;
-    private final MainView container;
+    private final MainView view;
     private Maze maze;
     private MazeNode current;
 
     public MazePartialView (MainView container, int rows, int cols){
-        this.container = container;
+        this.view = container;
         this.setBackground(Color.WHITE);
         setMazeSize(rows, cols);
     }
@@ -111,8 +112,8 @@ public class MazePartialView extends JPanel implements ActionListener {
 //                nodeButton.toggleAll();
             }
         }
+        maze.connectAll();
         nodeButtons.forEach(NodeButton::connectAll);
-
         maze.disconnectAll();
 
         maze.generate();
@@ -127,6 +128,38 @@ public class MazePartialView extends JPanel implements ActionListener {
         setSize(new Dimension(maxWidth, maxHeight));
 
         setVisible(true);
+    }
+
+    public void showSolution(Graphics2D g){
+        ArrayList<MazeNode> solution = maze.getSolution(current, maze.getDestination());
+
+        ArrayList<Point> points = new ArrayList<>();
+
+        if (solution == null) return;
+        for (MazeNode node : solution){
+            Point point = node.getAttachedButton().getLocation();
+            Dimension size = node.getAttachedButton().getSize();
+            point.setLocation(point.getX() + size.width / 2, point.getY() + size.getHeight() / 2);
+            points.add(point);
+        }
+
+        for (int i = 0; i < points.size() - 1; i ++){
+            double xFrom = points.get(i).getX();
+            double yFrom = points.get(i).getY();
+            double xTo = points.get(i + 1).getX();
+            double yTo = points.get(i + 1).getY();
+            Line2D line = new Line2D.Double(xFrom, yFrom, xTo, yTo);
+            g.setColor(Color.RED);
+            g.setStroke(new BasicStroke(2));
+            g.draw(line);
+        }
+    }
+
+    @Override
+    public void paint(Graphics g){
+        super.paint(g);
+        Graphics2D g2 = (Graphics2D) g;
+        showSolution(g2);
     }
 
     public void move(int keyCode){
@@ -152,6 +185,7 @@ public class MazePartialView extends JPanel implements ActionListener {
                 current.getAttachedButton().setBackground(Color.RED);
             }
         }
+        repaint();
     }
 
     public void clear(){
@@ -164,9 +198,11 @@ public class MazePartialView extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         Object source = e.getSource();
-        BorderButton sourceButton = (BorderButton)source;
+        BorderButton sourceButton = (BorderButton) source;
         sourceButton.action();
-        maze.getRoot().getAttachedButton().changeColour();
+//        maze.getRoot().getAttachedButton().changeColour();
+        repaint();
+        view.requestFocus();
     }
 //
 //    public void shift(int x, int y) {

@@ -3,20 +3,17 @@ package Models;
 import Generators.Generator;
 import Generators.GeneratorFactory;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Spliterator;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class Maze implements Iterable<MazeNode>{
-    private final MazeNode root;
+    private MazeNode root;
     private MazeNode destination;
     private final ArrayList<ArrayList<MazeNode>> nodes;
     private int cols, rows;
     private Generator generator;
 
     public Maze(){
-        this.root = new MazeNode().setValue("Root: 0, 0");
         nodes = new ArrayList<>();
     }
 
@@ -32,11 +29,13 @@ public class Maze implements Iterable<MazeNode>{
         for (int i = 0; i < rows; i++){
             nodes.add(new ArrayList<>());
             for (int j = 0; j < cols; j++){
-                MazeNode node = (i + j) == 0 ? root : new MazeNode();
+                MazeNode node = new MazeNode();
                 node.setCoordinate(i,j);
                 nodes.get(i).add(node);
             }
         }//        connectAll();
+        setRoot(this.get(0));
+        setDestination(this.get(getSize() - 1));
     }
 
     public void generate(){
@@ -131,5 +130,55 @@ public class Maze implements Iterable<MazeNode>{
     @Override
     public Spliterator spliterator() {
         return Iterable.super.spliterator();
+    }
+
+    public ArrayList<MazeNode> getSolution(){
+        return getSolution(root, destination);
+    }
+
+    public ArrayList<MazeNode> getSolution(MazeNode source, MazeNode dest){
+        ArrayList<MazeNode> shortestPath = new ArrayList<>();
+        HashMap<MazeNode, Boolean> visited = new HashMap<>();
+
+        if (source == dest) return null;
+
+        Queue<MazeNode> queue = new LinkedList<>();
+        Stack<MazeNode> pathStack = new Stack<>();
+
+        queue.add(source);
+        visited.put(source, true);
+
+        while (!queue.isEmpty()){
+            MazeNode u = queue.poll();
+            ArrayList<MazeNode> adjList = u.getNeighbours();
+            adjList.removeIf(Objects::isNull);
+
+            for (MazeNode v : adjList){
+                if (!visited.containsKey(v)){
+                    if (u == dest) break;
+                    queue.add(v);
+                    visited.put(v, true);
+                    pathStack.add(v);
+                }
+            }
+        }
+
+        MazeNode node, currentSrc = dest;
+        shortestPath.add(dest);
+        while(!pathStack.isEmpty()){
+            node = pathStack.pop();
+            if (node.hasNeighbour(currentSrc)){
+                shortestPath.add(node);
+                currentSrc = node;
+                if (node == source) break;
+            }
+        }
+        shortestPath.add(source);
+
+        return shortestPath;
+    }
+
+    public void setRoot(MazeNode root) {
+        this.root = root;
     }
 }

@@ -15,7 +15,7 @@ public class NodeButton extends JButton {
     public NodeButton(MazeNode node){
         this.node = node;
         node.attachButton(this);
-        this.addActionListener(e -> changeColour());
+//        this.addActionListener(e -> changeColour());
     }
 
     public void connectAll(){
@@ -146,6 +146,7 @@ public class NodeButton extends JButton {
         if (source == bottomWall) toggleBottom();
         if (source == leftWall) toggleLeft();
         if (source == rightWall) toggleRight();
+        repaintWalls();
     }
 
     public void removeWalls(NodeButton other){
