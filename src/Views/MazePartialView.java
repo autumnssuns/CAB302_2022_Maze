@@ -1,6 +1,5 @@
 package Views;
 
-import Generators.GeneratorFactory;
 import Models.*;
 
 import javax.swing.*;
@@ -11,11 +10,6 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 public class MazePartialView extends JPanel implements ActionListener {
-    private static int weight;
-    private static int size;
-
-    private static Dimension horizontalSize;
-    private static Dimension verticalSize;
 
     private ArrayList<BorderButton> vButtons = new ArrayList<>();
     private ArrayList<BorderButton> hButtons = new ArrayList<>();
@@ -29,11 +23,10 @@ public class MazePartialView extends JPanel implements ActionListener {
     public MazePartialView (MainView container, int rows, int cols){
         this.container = container;
         this.setBackground(Color.WHITE);
-        setSize(rows, cols);
-//        setSize(55 * cols, 55 * rows);
+        setMazeSize(rows, cols);
     }
 
-    public void setSize(int rows, int cols){
+    public void setMazeSize(int rows, int cols){
         this.maze = new Maze(rows, cols);
         this.rows = rows;
         this.cols = cols;
@@ -48,10 +41,13 @@ public class MazePartialView extends JPanel implements ActionListener {
     }
 
     public void render(){
-        size = (int) Math.ceil(Math.min((675 + 1.2*rows) / rows, (675 + 1.2*cols) / cols));
-        weight = (int) Math.ceil(0.2 * size);
-        horizontalSize = new Dimension(size + weight, weight);
-        verticalSize = new Dimension(weight, size + weight);
+//        int size = (int) Math.floor(Math.min((675 + 1.2 * rows) / rows, (675 + 1.2 * cols) / cols));
+        float sig = Math.max(rows, cols);
+        float numerator = sig > 2 ? 675 : sig == 2 ? 650 : 600;
+        int size = (int) Math.ceil(numerator / sig) + 1;
+        int weight = (int) Math.ceil(0.2 * size);
+        Dimension horizontalSize = new Dimension(size + weight, weight);
+        Dimension verticalSize = new Dimension(weight, size + weight);
         setLayout(null);
         int x = 0, y = 0;
 
@@ -69,7 +65,6 @@ public class MazePartialView extends JPanel implements ActionListener {
                 add(buttonVertical);
             }
         }
-        int maxHeight = y + verticalSize.height;
 
         for (int i = 0; i < cols; i++){
             for (int j = 0; j <= rows; j++){
@@ -85,8 +80,6 @@ public class MazePartialView extends JPanel implements ActionListener {
                 add(buttonHorizontal);
             }
         }
-
-        int maxWidth = x + horizontalSize.width;
 
         for (int i = 0; i < rows; i++){
             for (int j = 0; j < cols; j++){
@@ -129,9 +122,10 @@ public class MazePartialView extends JPanel implements ActionListener {
         maze.getRoot().getAttachedButton().setText("R");
         current.getAttachedButton().setBackground(Color.RED);
 
-        setPreferredSize(new Dimension(maxWidth, maxHeight));
-        setMaximumSize(new Dimension(maxWidth, maxHeight));
-        setMinimumSize(new Dimension(maxWidth, maxHeight));
+        int maxHeight = (size) * rows + weight;
+        int maxWidth = (size) * cols + weight;
+        setSize(new Dimension(maxWidth, maxHeight));
+
         setVisible(true);
     }
 
@@ -163,6 +157,8 @@ public class MazePartialView extends JPanel implements ActionListener {
     public void clear(){
         setVisible(false);
         removeAll();
+        revalidate();
+        repaint();
     }
 
     @Override

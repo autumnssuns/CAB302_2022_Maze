@@ -15,7 +15,7 @@ public class MenuPartialView extends JPanel implements ActionListener {
     }
 
     private final JSpinner rowsInput, colsInput;
-    private final JButton createButton, deleteButton, exportButton;
+    private final JButton createButton, saveButton, exportButton;
     private final JCheckBox showGridCheckbox;
     private final JComboBox algorithmSelectionComboBox;
     private final JTextField mazeNameTextField, authornameTextField;
@@ -38,9 +38,9 @@ public class MenuPartialView extends JPanel implements ActionListener {
         createButton = new JButton("Create");
         createButton.addActionListener(this);
 
-        deleteButton = new JButton("Delete");
-        deleteButton.addActionListener(this);
-        deleteButton.setEnabled(false);
+        saveButton = new JButton("Save");
+        saveButton.addActionListener(this);
+        saveButton.setEnabled(false);
 
         exportButton = new JButton("Export");
         exportButton.addActionListener(this);
@@ -64,7 +64,7 @@ public class MenuPartialView extends JPanel implements ActionListener {
         descriptionTextArea.setLineWrap(true);
 
         layout.linkSize(SwingConstants.VERTICAL, mazeNameTextField, authornameTextField, algorithmSelectionComboBox);
-        layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+        layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
                 .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                                 .addComponent(sizeLabel)
@@ -81,10 +81,10 @@ public class MenuPartialView extends JPanel implements ActionListener {
                 )
                 .addComponent(mazeNameTextField)
                 .addComponent(authornameTextField)
-                .addComponent(descriptionTextArea, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
+                .addComponent(descriptionTextArea, 100, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createSequentialGroup()
                         .addComponent(exportButton)
-                        .addComponent(deleteButton)
+                        .addComponent(saveButton)
                         .addComponent(createButton)
                 )
                 .addComponent(showGridCheckbox)
@@ -106,11 +106,13 @@ public class MenuPartialView extends JPanel implements ActionListener {
                 .addComponent(descriptionTextArea, 100, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                         .addComponent(createButton)
-                        .addComponent(deleteButton)
+                        .addComponent(saveButton)
                         .addComponent(exportButton)
                 )
                 .addComponent(showGridCheckbox)
         );
+
+        setMinimumSize(new Dimension(authornameTextField.getMinimumSize().width,0));
     }
 
     public int getRows(){
@@ -133,15 +135,17 @@ public class MenuPartialView extends JPanel implements ActionListener {
                 view.renderMazeView();
                 view.requestFocus();
                 view.toggleMazeGrid(showGridCheckbox.getModel().isSelected());
-                deleteButton.setEnabled(true);
-                createButton.setEnabled(false);
+                saveButton.setEnabled(true);
+//                createButton.setEnabled(false);
+                createButton.setText("Delete");
                 exportButton.setEnabled(true);
                 showGridCheckbox.setEnabled(true);
             }
             case "Delete" -> {
                 view.clearMazeView();
-                deleteButton.setEnabled(false);
-                createButton.setEnabled(true);
+                saveButton.setEnabled(false);
+//                createButton.setEnabled(true);
+                createButton.setText("Create");
                 exportButton.setEnabled(false);
                 showGridCheckbox.setEnabled(false);
             }

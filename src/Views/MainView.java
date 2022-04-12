@@ -1,15 +1,16 @@
 package Views;
 
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.plaf.basic.BasicSplitPaneDivider;
-import javax.swing.plaf.basic.BasicSplitPaneUI;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 public class MainView extends JFrame implements KeyListener, Runnable {
     private MazePartialView mazePartialView;
+    private ThinSplitPane mainContainer;
+    private JPanel menuContainer;
+    private JPanel editorContainer;
+    private JPanel mazePartialViewContainer;
 
     public void createGUI(){
         setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -19,12 +20,35 @@ public class MainView extends JFrame implements KeyListener, Runnable {
         addKeyListener(this);
 
         getContentPane().setLayout(new BorderLayout());
+        menuContainer = new JPanel(new BorderLayout());
+        editorContainer = new JPanel();
+        editorContainer.setLayout(new BoxLayout(editorContainer, BoxLayout.X_AXIS));
+
+        mainContainer = new ThinSplitPane(JSplitPane.HORIZONTAL_SPLIT, menuContainer, editorContainer);
+        mainContainer.setOneTouchExpandable(true);
+
+        mazePartialViewContainer = new JPanel(new BorderLayout());
+//        mazePartialViewContainer.setBackground(Color.pink);
+
+        JPanel leftPadding = new JPanel();
+//        leftPadding.setBackground(Color.GREEN);
+        JPanel rightPadding = new JPanel();
+//        rightPadding.setBackground(Color.BLUE);
+
+        editorContainer.add(leftPadding); // Left Padding
+        editorContainer.add(mazePartialViewContainer);
+        editorContainer.add(rightPadding); // Right Padding
+        editorContainer.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        getContentPane().add(mainContainer);
+
         addLabel(); // PAGE START
         addMenu();  // LINE START
 
         getContentPane().add(new JPanel(), BorderLayout.PAGE_END);
         getContentPane().add(new JPanel(), BorderLayout.LINE_END);
 
+        repaint();
         setVisible(true);
     }
 
@@ -39,44 +63,27 @@ public class MainView extends JFrame implements KeyListener, Runnable {
         MenuPartialView menuPartialView = new MenuPartialView(this);
         JPanel emptyPanel = new JPanel();
 
-        JSplitPane container = new JSplitPane(JSplitPane.VERTICAL_SPLIT, menuPartialView, emptyPanel);
+        ThinSplitPane container = new ThinSplitPane(JSplitPane.VERTICAL_SPLIT, menuPartialView, emptyPanel);
         container.setOneTouchExpandable(true);
-        container.setUI(new BasicSplitPaneUI(){
-            @Override
-            public BasicSplitPaneDivider createDefaultDivider()
-            {
-                return new BasicSplitPaneDivider(this)
-                {
-                    public void setBorder(Border b) {}
-
-                    @Override
-                    public void paint(Graphics g)
-                    {
-                        g.setColor(Color.GRAY);
-                        g.fillRect(0, 0, getSize().width, 1);
-                        super.paint(g);
-                    }
-                };
-            }
-        });
-        getContentPane().add(container, BorderLayout.LINE_START);
+        menuContainer.add(container);
+        menuContainer.setVisible(true);
     }
 
     public void addMazeView(int rows, int cols){
-        JPanel container = new JPanel();
-        container.setLayout(new BoxLayout(container, BoxLayout.X_AXIS));
-        getContentPane().add(container);
+//        JPanel container = new JPanel();
+//        container.setLayout(new BoxLayout(container, BoxLayout.X_AXIS));
 
         if (mazePartialView == null){
             mazePartialView = new MazePartialView(this, rows, cols);
+            mazePartialViewContainer.add(mazePartialView);
         } else {
-            mazePartialView.setSize(rows, cols);
+            mazePartialView.setMazeSize(rows, cols);
         }
-        container.add(new JPanel());
-        container.add(mazePartialView);
-        container.add(new JPanel());
-        mazePartialView.setAlignmentX(Component.CENTER_ALIGNMENT);
-        setVisible(true);
+
+//        container.add(new JPanel());
+//        container.add(mazePartialView);
+//        container.add(new JPanel());
+//        mazePartialView.setAlignmentX(Component.CENTER_ALIGNMENT);
     }
 
     public void setMazeGenerator(int generatorType){
@@ -113,5 +120,9 @@ public class MainView extends JFrame implements KeyListener, Runnable {
 
     public void renderMazeView() {
         mazePartialView.render();
+        mazePartialViewContainer.setPreferredSize(mazePartialView.getSize());
+        mazePartialViewContainer.setMaximumSize(mazePartialView.getSize());
+        mazePartialViewContainer.setMinimumSize(mazePartialView.getSize());
+        System.out.println("Maze View Size " + mazePartialView.getSize());
     }
 }
