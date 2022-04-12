@@ -120,7 +120,6 @@ public class MazePartialView extends JPanel implements ActionListener {
 
         nodeButtons.forEach(NodeButton::repaintWalls);
 
-        maze.getRoot().getAttachedButton().setText("R");
         current.getAttachedButton().setBackground(Color.RED);
 
         int maxHeight = (size) * rows + weight;
@@ -132,7 +131,8 @@ public class MazePartialView extends JPanel implements ActionListener {
 
     public void showSolution(Graphics2D g){
         ArrayList<MazeNode> solution = maze.getSolution(current, maze.getDestination());
-
+        maze.getRoot().getAttachedButton().setText("R");
+        maze.getDestination().getAttachedButton().setText("D");
         ArrayList<Point> points = new ArrayList<>();
 
         if (solution == null) return;

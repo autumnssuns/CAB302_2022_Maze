@@ -152,10 +152,10 @@ public class Maze implements Iterable<MazeNode>{
             MazeNode u = queue.poll();
             ArrayList<MazeNode> adjList = u.getNeighbours();
             adjList.removeIf(Objects::isNull);
+            if (u == dest) break;
 
             for (MazeNode v : adjList){
                 if (!visited.containsKey(v)){
-                    if (u == dest) break;
                     queue.add(v);
                     visited.put(v, true);
                     pathStack.add(v);
@@ -167,10 +167,10 @@ public class Maze implements Iterable<MazeNode>{
         shortestPath.add(dest);
         while(!pathStack.isEmpty()){
             node = pathStack.pop();
+            if (node == source) break;
             if (node.hasNeighbour(currentSrc)){
                 shortestPath.add(node);
                 currentSrc = node;
-                if (node == source) break;
             }
         }
         shortestPath.add(source);

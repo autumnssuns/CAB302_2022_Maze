@@ -4,9 +4,11 @@ import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
-public class BorderButton extends JButton {
+public class BorderButton extends JButton implements MouseListener {
 
     private boolean closed;
     private boolean toggleable = true;
@@ -31,7 +33,7 @@ public class BorderButton extends JButton {
 
     public BorderButton(){
         super();
-        addMouseListener(new BorderButtonMouseAdapter());
+        addMouseListener(this);
         setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
         setClosed(false);
         linkedNodeButton = new ArrayList<>();
@@ -48,6 +50,12 @@ public class BorderButton extends JButton {
         linkedNodeButton.forEach(nodeButton -> nodeButton.toggleAll(this));
     }
 
+    public void preview(){
+        if (!toggleable) return;
+        closed = !closed;
+        linkedNodeButton.forEach(nodeButton -> nodeButton.toggleAll(this));
+    }
+
     public void setToggleable(boolean toggleable){
         this.toggleable = toggleable;
     }
@@ -59,5 +67,43 @@ public class BorderButton extends JButton {
     public void updateBorder(){
         setBackground(this.closed ? Color.BLACK : Color.WHITE);
         setOpaque(closed);
+    }
+
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+    }
+    private boolean clicked = false;
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        System.out.println("Released");
+        if (!clicked){
+            action();
+            clicked = true;
+        }
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+        System.out.println("Entered");
+        action();
+        setOpaque(true);
+        setBackground(Color.GRAY);
+        getParent().repaint();
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+        System.out.println("Exited");
+        if (!clicked){
+            action();
+        }
+        clicked = false;
+        updateBorder();
+        getParent().repaint();
     }
 }

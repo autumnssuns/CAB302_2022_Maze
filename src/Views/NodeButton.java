@@ -4,10 +4,12 @@ import Models.MazeNode;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class NodeButton extends JButton {
+public class NodeButton extends JButton implements MouseListener {
     public MazeNode node;
     public BorderButton topWall, bottomWall, leftWall, rightWall;
     public NodeButton top, bottom, left, right;
@@ -15,6 +17,7 @@ public class NodeButton extends JButton {
     public NodeButton(MazeNode node){
         this.node = node;
         node.attachButton(this);
+        addMouseListener(this);
 //        this.addActionListener(e -> changeColour());
     }
 
@@ -154,5 +157,31 @@ public class NodeButton extends JButton {
         if (this.bottom == other) toggleBottom();
         if (this.left == other) toggleLeft();
         if (this.right == other) toggleRight();
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+        getParent().repaint();
+        System.out.println("Attempt to reprint");
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
     }
 }
