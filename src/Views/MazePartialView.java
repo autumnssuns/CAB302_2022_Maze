@@ -10,19 +10,18 @@ import java.awt.event.KeyEvent;
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
 
-public class MazePartialView extends JPanel implements ActionListener {
+public class MazePartialView extends PartialView implements ActionListener {
 
     private ArrayList<BorderButton> vButtons = new ArrayList<>();
     private ArrayList<BorderButton> hButtons = new ArrayList<>();
     private ArrayList<NodeButton> nodeButtons;
 
     private int rows, cols;
-    private final MainView view;
     private Maze maze;
     private MazeNode current;
 
     public MazePartialView (MainView container, int rows, int cols){
-        this.view = container;
+        super(container);
         this.setBackground(Color.WHITE);
         setMazeSize(rows, cols);
     }
@@ -136,13 +135,13 @@ public class MazePartialView extends JPanel implements ActionListener {
         ArrayList<Point> points = new ArrayList<>();
 
         if (solution == null) return;
+        if (!view.isShowingSolution()) return;
         for (MazeNode node : solution){
             Point point = node.getAttachedButton().getLocation();
             Dimension size = node.getAttachedButton().getSize();
             point.setLocation(point.getX() + size.width / 2, point.getY() + size.getHeight() / 2);
             points.add(point);
         }
-
         for (int i = 0; i < points.size() - 1; i ++){
             double xFrom = points.get(i).getX();
             double yFrom = points.get(i).getY();

@@ -7,23 +7,21 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class MenuPartialView extends JPanel implements ActionListener {
+public class MazeCreationMenuPartialView extends PartialView implements ActionListener {
     private static class MazeSizeSpinnerModel extends SpinnerNumberModel{
         MazeSizeSpinnerModel(){
-            super(1, 1, 100, 1);
+            super(10, 1, 100, 1);
         }
     }
 
     private final JSpinner rowsInput, colsInput;
     private final JButton createButton, saveButton, exportButton;
-    private final JCheckBox showGridCheckbox;
     private final JComboBox algorithmSelectionComboBox;
     private final JTextField mazeNameTextField, authornameTextField;
     private final JTextArea descriptionTextArea;
-    private final MainView view;
 
-    public MenuPartialView(MainView container){
-        this.view = container;
+    public MazeCreationMenuPartialView(MainView container){
+        super(container);
         GroupLayout layout = new GroupLayout(this);
         layout.setAutoCreateGaps(true);
         layout.setAutoCreateContainerGaps(true);
@@ -34,7 +32,9 @@ public class MenuPartialView extends JPanel implements ActionListener {
         JLabel detailsLabel = new JLabel("Details");
 
         rowsInput = new JSpinner(new MazeSizeSpinnerModel());
+        rowsInput.setValue(10);
         colsInput = new JSpinner(new MazeSizeSpinnerModel());
+        colsInput.setValue(10);
         createButton = new JButton("Create");
         createButton.addActionListener(this);
 
@@ -45,15 +45,6 @@ public class MenuPartialView extends JPanel implements ActionListener {
         exportButton = new JButton("Export");
         exportButton.addActionListener(this);
         exportButton.setEnabled(false);
-
-        showGridCheckbox = new JCheckBox("Show Grid");
-        showGridCheckbox.setSelected(true);
-        showGridCheckbox.setEnabled(false);
-        showGridCheckbox.addActionListener(e -> {
-            JCheckBox source = (JCheckBox) e.getSource();
-            boolean state = (source.getModel().isSelected());
-            view.toggleMazeGrid(state);
-        });
 
         algorithmSelectionComboBox = new JComboBox<>(GeneratorFactory.ALGORITHMS);
         algorithmSelectionComboBox.setSelectedIndex(0);
@@ -87,7 +78,6 @@ public class MenuPartialView extends JPanel implements ActionListener {
                         .addComponent(saveButton)
                         .addComponent(createButton)
                 )
-                .addComponent(showGridCheckbox)
         );
 
         layout.setVerticalGroup(layout.createSequentialGroup()
@@ -109,7 +99,6 @@ public class MenuPartialView extends JPanel implements ActionListener {
                         .addComponent(saveButton)
                         .addComponent(exportButton)
                 )
-                .addComponent(showGridCheckbox)
         );
 
         setMinimumSize(new Dimension(authornameTextField.getMinimumSize().width,0));
@@ -134,12 +123,11 @@ public class MenuPartialView extends JPanel implements ActionListener {
                 view.setMazeGenerator(algorithmSelectionComboBox.getSelectedIndex());
                 view.renderMazeView();
                 view.requestFocus();
-                view.toggleMazeGrid(showGridCheckbox.getModel().isSelected());
                 saveButton.setEnabled(true);
 //                createButton.setEnabled(false);
                 createButton.setText("Delete");
                 exportButton.setEnabled(true);
-                showGridCheckbox.setEnabled(true);
+//                showGridCheckbox.setEnabled(true);
             }
             case "Delete" -> {
                 view.clearMazeView();
@@ -147,7 +135,7 @@ public class MenuPartialView extends JPanel implements ActionListener {
 //                createButton.setEnabled(true);
                 createButton.setText("Create");
                 exportButton.setEnabled(false);
-                showGridCheckbox.setEnabled(false);
+//                showGridCheckbox.setEnabled(false);
             }
             case "Export" -> {
 

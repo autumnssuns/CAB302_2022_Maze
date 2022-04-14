@@ -12,6 +12,25 @@ public class MainView extends JFrame implements KeyListener, Runnable {
     private JPanel editorContainer;
     private JPanel mazePartialViewContainer;
 
+    private boolean showingGrid;
+    private boolean showingSolution;
+
+    public boolean isShowingGrid() {
+        return showingGrid;
+    }
+
+    public void setShowingGrid(boolean showingGrid) {
+        this.showingGrid = showingGrid;
+    }
+
+    public boolean isShowingSolution() {
+        return showingSolution;
+    }
+
+    public void setShowingSolution(boolean showingSolution) {
+        this.showingSolution = showingSolution;
+    }
+
     public void createGUI(){
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setUndecorated(true);
@@ -60,10 +79,10 @@ public class MainView extends JFrame implements KeyListener, Runnable {
     }
 
     public void addMenu(){
-        MenuPartialView menuPartialView = new MenuPartialView(this);
-        JPanel emptyPanel = new JPanel();
+        MazeCreationMenuPartialView mazeCreationMenuPartialView = new MazeCreationMenuPartialView(this);
+        MazeViewOptionPartialView mazeViewOptionPartialView = new MazeViewOptionPartialView(this);
 
-        ThinSplitPane container = new ThinSplitPane(JSplitPane.VERTICAL_SPLIT, menuPartialView, emptyPanel);
+        ThinSplitPane container = new ThinSplitPane(JSplitPane.VERTICAL_SPLIT, mazeCreationMenuPartialView, mazeViewOptionPartialView);
         container.setOneTouchExpandable(true);
         menuContainer.add(container);
         menuContainer.setVisible(true);
@@ -95,6 +114,7 @@ public class MainView extends JFrame implements KeyListener, Runnable {
     }
 
     public void toggleMazeGrid(boolean state){
+        showingGrid = state;
         mazePartialView.toggleGrid(state);
     }
 
@@ -124,5 +144,11 @@ public class MainView extends JFrame implements KeyListener, Runnable {
         mazePartialViewContainer.setMaximumSize(mazePartialView.getSize());
         mazePartialViewContainer.setMinimumSize(mazePartialView.getSize());
         System.out.println("Maze View Size " + mazePartialView.getSize());
+        toggleMazeGrid(showingGrid);
+    }
+
+    public void toggleMazeSolution(boolean state) {
+        showingSolution = state;
+        mazePartialView.repaint();
     }
 }

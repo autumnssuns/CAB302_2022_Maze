@@ -137,6 +137,37 @@ public class Maze implements Iterable<MazeNode>{
     }
 
     public ArrayList<MazeNode> getSolution(MazeNode source, MazeNode dest){
+        ArrayList<MazeNode> directions = new ArrayList<>();
+        HashMap<MazeNode, Boolean> visited = new HashMap<>();
+        HashMap<MazeNode, MazeNode> prev = new HashMap<>();
+        Queue<MazeNode> q = new LinkedList<>();
+        MazeNode current = source;
+        q.add(current);
+        visited.put(current, true);
+        while(!q.isEmpty()){
+            current = q.remove();
+            if (current == dest){
+                break;
+            } else {
+                for (MazeNode node : current.getNeighbours()){
+                    if (!visited.containsKey(node) && node != null){
+                        q.add(node);
+                        visited.put(node, true);
+                        prev.put(node, current);
+                    }
+                }
+            }
+        }
+        if (!current.equals(dest)) return null;
+
+        for (MazeNode node = dest; node != null; node = prev.get(node)){
+            directions.add(node);
+        }
+        Collections.reverse(directions);
+        return directions;
+    }
+
+    public ArrayList<MazeNode> getSolutionOld(MazeNode source, MazeNode dest){
         ArrayList<MazeNode> shortestPath = new ArrayList<>();
         HashMap<MazeNode, Boolean> visited = new HashMap<>();
 
@@ -168,7 +199,7 @@ public class Maze implements Iterable<MazeNode>{
         while(!pathStack.isEmpty()){
             node = pathStack.pop();
             if (node == source) break;
-            if (node.hasNeighbour(currentSrc)){
+            if (currentSrc.hasNeighbour(node)){
                 shortestPath.add(node);
                 currentSrc = node;
             }

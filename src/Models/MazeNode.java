@@ -7,7 +7,7 @@ import java.util.HashMap;
 
 public class MazeNode {
     private MazeNode left, right, top, bottom;
-    private HashMap<String, MazeNode> neighbours;
+    private ArrayList<MazeNode> neighbours;
     private int row, col;
     private String value;
 
@@ -18,7 +18,7 @@ public class MazeNode {
         right = null;
         top = null;
         bottom = null;
-        neighbours = new HashMap<>();
+        neighbours = new ArrayList<>();
     }
 
     public void attachButton(NodeButton button){
@@ -42,12 +42,7 @@ public class MazeNode {
         return col;
     }
 
-    public MazeNode goTo(String command){
-        return neighbours.getOrDefault(command, null);
-    }
-
     public ArrayList<MazeNode> getNeighbours(){
-        ArrayList<MazeNode> neighbours = new ArrayList(this.neighbours.values());
         return neighbours;
     }
 
@@ -61,23 +56,27 @@ public class MazeNode {
     }
 
     public void setLeft(MazeNode node){
+        neighbours.remove(left);
         left = node;
-        neighbours.put("left", left);
+        neighbours.add(left);
     }
 
     public void setRight(MazeNode node){
+        neighbours.remove(right);
         right = node;
-        neighbours.put("right", right);
+        neighbours.add(right);
     }
 
     public void setTop(MazeNode node){
+        neighbours.remove(top);
         top = node;
-        neighbours.put("top", top);
+        neighbours.add(top);
     }
 
     public void setBottom(MazeNode node){
+        neighbours.remove(bottom);
         bottom = node;
-        neighbours.put("bottom", bottom);
+        neighbours.add(bottom);
     }
 
     public MazeNode getLeft() {
@@ -135,6 +134,6 @@ public class MazeNode {
     }
 
     public boolean hasNeighbour(MazeNode other){
-        return neighbours.containsValue(other);
+        return neighbours.contains(other);
     }
 }
