@@ -17,6 +17,11 @@ public record GeneratorFactory(Maze maze) {
 
     private static final int DEFAULT = NO_ALGORITHM;
 
+    public static boolean isCreative(int type){
+        return type == NO_ALGORITHM
+                || type == RECURSIVE_DIVISION;
+    };
+
     public Generator create(int type) {
         return switch (type) {
             case NO_ALGORITHM -> new EmptyGenerator(maze);

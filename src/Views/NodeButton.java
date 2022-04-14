@@ -35,6 +35,23 @@ public class NodeButton extends JButton implements MouseListener {
         if (rightWall.isToggleable()) rightWall.setClosed(node.getRight() == null);
     }
 
+    public void paintWall(String location, boolean closed){
+        switch (location){
+            case "top" -> {
+                if (topWall.isToggleable()) topWall.paintBorder(closed);
+            }
+            case "bottom" -> {
+                if (bottomWall.isToggleable()) bottomWall.paintBorder(closed);
+            }
+            case "left" -> {
+                if (leftWall.isToggleable()) leftWall.paintBorder(closed);
+            }
+            case "right" -> {
+                if (rightWall.isToggleable()) rightWall.paintBorder(closed);
+            }
+        }
+    }
+
     public void changeColour(){
         Random rand = new Random();
         float r = rand.nextFloat() / 2f + 0.5f;
@@ -65,8 +82,6 @@ public class NodeButton extends JButton implements MouseListener {
         });
         timer.setRepeats( false );
         timer.start();
-
-
     }
 
     public void attachTopButton(BorderButton topButton){

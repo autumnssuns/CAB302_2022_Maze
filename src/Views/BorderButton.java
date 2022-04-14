@@ -65,7 +65,11 @@ public class BorderButton extends JButton implements MouseListener {
     }
 
     public void updateBorder(){
-        setBackground(this.closed ? Color.BLACK : Color.WHITE);
+        paintBorder(this.closed);
+    }
+
+    public void paintBorder(boolean closed){
+        setBackground(closed ? Color.BLACK : Color.WHITE);
         setOpaque(closed);
     }
 

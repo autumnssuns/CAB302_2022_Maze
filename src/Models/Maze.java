@@ -12,6 +12,7 @@ public class Maze implements Iterable<MazeNode>{
     private final ArrayList<ArrayList<MazeNode>> nodes;
     private int cols, rows;
     private Generator generator;
+    private int generatorType;
 
     public Maze(){
         nodes = new ArrayList<>();
@@ -19,7 +20,12 @@ public class Maze implements Iterable<MazeNode>{
 
     public void setGenerator(int generatorType){
         GeneratorFactory factory = new GeneratorFactory(this);
+        this.generatorType = generatorType;
         this.generator = factory.create(generatorType);
+    }
+
+    public int getGeneratorType(){
+        return this.generatorType;
     }
 
     public Maze(int rows, int cols){
@@ -40,6 +46,10 @@ public class Maze implements Iterable<MazeNode>{
 
     public void generate(){
         generator.generate();
+    }
+
+    public ArrayList<StateFrame> getFrames(){
+        return generator.getFrames();
     }
 
     public void connectAll(){

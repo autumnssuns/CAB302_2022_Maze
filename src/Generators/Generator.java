@@ -2,14 +2,26 @@ package Generators;
 
 import Models.Maze;
 import Models.MazeNode;
+import Models.StateFrame;
 
 import java.util.ArrayList;
 
 public abstract class Generator {
     protected Maze maze;
+    protected ArrayList<StateFrame> states;
+
 
     public Generator(Maze maze){
+        states = new ArrayList<>();
         this.maze = maze;
+    }
+
+    public void addFrame(MazeNode node){
+        states.add(new StateFrame(node));
+    }
+
+    public ArrayList<StateFrame> getFrames(){
+        return states;
     }
 
     public abstract void generate();

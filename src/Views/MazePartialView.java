@@ -1,5 +1,7 @@
 package Views;
 
+import Generators.Generator;
+import Generators.GeneratorFactory;
 import Models.*;
 
 import javax.swing.*;
@@ -9,6 +11,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class MazePartialView extends PartialView implements ActionListener {
 
@@ -111,14 +114,20 @@ public class MazePartialView extends PartialView implements ActionListener {
 //                nodeButton.toggleAll();
             }
         }
+
         maze.connectAll();
         nodeButtons.forEach(NodeButton::connectAll);
         maze.disconnectAll();
 
+//        nodeButtons.forEach(NodeButton::repaintWalls);
         maze.generate();
 
-        nodeButtons.forEach(NodeButton::repaintWalls);
+        ArrayList<StateFrame> steps = maze.getFrames();
+        System.out.println(steps);
 
+        steps.forEach(n -> System.out.println(n.getState()));
+        animateSteps(steps);
+//        nodeButtons.forEach(NodeButton::repaintWalls);
         current.getAttachedButton().setBackground(Color.RED);
 
         int maxHeight = (size) * rows + weight;
@@ -126,6 +135,45 @@ public class MazePartialView extends PartialView implements ActionListener {
         setSize(new Dimension(maxWidth, maxHeight));
 
         setVisible(true);
+    }
+
+    public void animateSteps(ArrayList<StateFrame> steps){
+        boolean blankStart = GeneratorFactory.isCreative(maze.getGeneratorType());
+        hButtons.forEach(x -> {
+            if (x.isToggleable()) x.paintBorder(!blankStart);
+        });
+        vButtons.forEach(x -> {
+            if (x.isToggleable()) x.paintBorder(!blankStart);
+        });
+
+        int interval = 1;
+        int end = interval * steps.size();
+//        maze.disconnectAll();
+        new Timer(interval, new ActionListener() {
+            int currentTime = 0;
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int idx = currentTime / interval;
+                if (idx < steps.size()) {
+                    MazeNode node = steps.get(idx).getNode();
+//                    node.getAttachedButton().repaintWalls();
+                    boolean top = (Boolean) steps.get(idx).getState().get("top");
+                    node.getAttachedButton().paintWall("top", !top);
+                    boolean bottom = (Boolean) steps.get(idx).getState().get("bottom");
+                    node.getAttachedButton().paintWall("bottom", !bottom);
+                    boolean left = (Boolean) steps.get(idx).getState().get("left");
+                    node.getAttachedButton().paintWall("left", !left);
+                    boolean right = (Boolean) steps.get(idx).getState().get("right");
+                    node.getAttachedButton().paintWall("right", !right);
+                }
+                if (currentTime <= end){
+                    currentTime++;
+                } else {
+                    ((Timer)e.getSource()).stop();
+                }
+            }
+        }).start();
     }
 
     public void showSolution(Graphics2D g){

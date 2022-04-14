@@ -27,6 +27,7 @@ public class AldousBroderGenerator extends Generator{
             MazeNode random = neighbours.get(new Random().nextInt(neighbours.size()));
             if (!visited.contains(random)){
                 current.connect(random);
+                addFrame(random);
                 unvisited.remove(random);
                 visited.add(random);
             }

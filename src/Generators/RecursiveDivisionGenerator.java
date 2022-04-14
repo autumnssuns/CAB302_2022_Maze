@@ -34,7 +34,10 @@ public class RecursiveDivisionGenerator extends Generator{
             range(x0, x0 + width).filter(x -> x != door).forEach(x -> {
                 MazeNode node = maze.get(y - 1, x);
                 MazeNode other = maze.get(y, x);
-                if (node != null && other != null) node.disconnect(other);
+                if (node != null && other != null) {
+                    node.disconnect(other);
+                    addFrame(node);
+                }
             });
 
             divide(x0, y0, width, y - y0);
@@ -46,7 +49,10 @@ public class RecursiveDivisionGenerator extends Generator{
             range(y0, y0 + height).filter(y -> y != door).forEach(y -> {
                 MazeNode node = maze.get(y, x - 1);
                 MazeNode other = maze.get(y, x);
-                if (node != null && other != null) node.disconnect(other);
+                if (node != null && other != null) {
+                    node.disconnect(other);
+                    addFrame(node);
+                }
             });
             divide(x0, y0, x - x0, height);
             divide(x, y0, width - (x - x0), height);

@@ -34,6 +34,7 @@ public class DFSGenerator extends Generator {
                 int randIdx = new Random().nextInt(neighbours.size());
                 MazeNode selected = neighbours.get(randIdx);
                 node.connect(selected);
+                addFrame(node);
                 visited.add(selected);
                 pathStack.push(selected);
             }
