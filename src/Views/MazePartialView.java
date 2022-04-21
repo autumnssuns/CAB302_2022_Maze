@@ -52,12 +52,11 @@ public class MazePartialView extends PartialView implements ActionListener {
         Dimension horizontalSize = new Dimension(size + weight, weight);
         Dimension verticalSize = new Dimension(weight, size + weight);
         setLayout(null);
-        int x = 0, y = 0;
 
         for (int i = 0; i <= cols; i++){
             for (int j = 0; j < rows; j++){
-                x = size * i;
-                y = size * j;
+                int x = size * i;
+                int y = size * j;
 
                 BorderButton buttonVertical = new BorderButton(this);
                 buttonVertical.setBounds(x, y, verticalSize.width, verticalSize.height);
@@ -71,8 +70,8 @@ public class MazePartialView extends PartialView implements ActionListener {
 
         for (int i = 0; i < cols; i++){
             for (int j = 0; j <= rows; j++){
-                x = size * i;
-                y = size * j;
+                int x = size * i;
+                int y = size * j;
 
                 BorderButton buttonHorizontal = new BorderButton(this);
                 buttonHorizontal.setBounds(x, y, horizontalSize.width, horizontalSize.height);
@@ -83,7 +82,7 @@ public class MazePartialView extends PartialView implements ActionListener {
                 add(buttonHorizontal);
             }
         }
-
+//        System.out.println(rowsTimer.isRunning());
         for (int i = 0; i < rows; i++){
             for (int j = 0; j < cols; j++){
                 NodeButton nodeButton = new NodeButton(maze.get(i,j));

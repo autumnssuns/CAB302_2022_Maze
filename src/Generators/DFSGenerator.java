@@ -14,8 +14,8 @@ public class DFSGenerator extends Generator {
         super(maze);
         pathStack = new Stack<>();
         visited = new ArrayList<>();
-        int startRow = new Random().nextInt(maze.getSize(0));
-        int startCol = new Random().nextInt(maze.getSize(1));
+        int startRow = rnd.nextInt(maze.getSize(0));
+        int startCol = rnd.nextInt(maze.getSize(1));
         MazeNode startNode = maze.get(startRow, startCol);
         pathStack.add(startNode);
         visited.add(startNode);
@@ -31,7 +31,7 @@ public class DFSGenerator extends Generator {
 
             if (!neighbours.isEmpty()){
                 pathStack.push(node);
-                int randIdx = new Random().nextInt(neighbours.size());
+                int randIdx = rnd.nextInt(neighbours.size());
                 MazeNode selected = neighbours.get(randIdx);
                 node.connect(selected);
                 addFrame(node);

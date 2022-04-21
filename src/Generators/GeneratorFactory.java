@@ -7,13 +7,15 @@ public record GeneratorFactory(Maze maze) {
             "None",
             "Depth first traversal",
             "Aldous-Broder",
-            "Recursive Division"
+            "Recursive Division",
+            "Growing Tree",
     };
 
     public static final int NO_ALGORITHM = 0;
     public static final int DEPTH_FIRST_TRAVERSAL = 1;
     public static final int ALDOUS_BRODER = 2;
     public static final int RECURSIVE_DIVISION = 3;
+    public static final int GROWING_TREE = 4;
 
     private static final int DEFAULT = NO_ALGORITHM;
 
@@ -28,6 +30,7 @@ public record GeneratorFactory(Maze maze) {
             case DEPTH_FIRST_TRAVERSAL -> new DFSGenerator(maze);
             case ALDOUS_BRODER -> new AldousBroderGenerator(maze);
             case RECURSIVE_DIVISION -> new RecursiveDivisionGenerator(maze);
+            case GROWING_TREE -> new GrowingTreeGenerator(maze);
             default -> create(DEFAULT);
         };
     }

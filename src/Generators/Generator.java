@@ -5,15 +5,17 @@ import Models.MazeNode;
 import Models.StateFrame;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public abstract class Generator {
     protected Maze maze;
     protected ArrayList<StateFrame> states;
-
+    protected Random rnd;
 
     public Generator(Maze maze){
         states = new ArrayList<>();
         this.maze = maze;
+        rnd = new Random();
     }
 
     public void addFrame(MazeNode node){
