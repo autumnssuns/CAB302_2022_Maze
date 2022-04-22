@@ -12,16 +12,17 @@ public class DFSGenerator extends Generator {
 
     public DFSGenerator(Maze maze){
         super(maze);
+    }
+
+    public void generate(){
         pathStack = new Stack<>();
         visited = new ArrayList<>();
         int startRow = rnd.nextInt(maze.getSize(0));
         int startCol = rnd.nextInt(maze.getSize(1));
+        System.out.println(startRow + " " + startCol);
         MazeNode startNode = maze.get(startRow, startCol);
         pathStack.add(startNode);
         visited.add(startNode);
-    }
-
-    public void generate(){
         while (!pathStack.isEmpty()){
             MazeNode node = pathStack.pop();
 

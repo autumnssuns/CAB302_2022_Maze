@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Random;
 
 public class MazeCreationMenuPartialView extends PartialView implements ActionListener {
     private static class MazeSizeSpinnerModel extends SpinnerNumberModel{
@@ -17,7 +18,7 @@ public class MazeCreationMenuPartialView extends PartialView implements ActionLi
     private final JSpinner rowsInput, colsInput;
     private final JButton createButton, saveButton, exportButton;
     private final JComboBox algorithmSelectionComboBox;
-    private final JTextField mazeNameTextField, authornameTextField;
+    private final PromptTextField mazeNameTextField, authornameTextField, seedTextField;
     private final JTextArea descriptionTextArea;
 
     public MazeCreationMenuPartialView(MainView container){
@@ -30,6 +31,7 @@ public class MazeCreationMenuPartialView extends PartialView implements ActionLi
         JLabel sizeLabel = new JLabel("Maze Size");
         JLabel algorithmLabel = new JLabel("Algorithm");
         JLabel detailsLabel = new JLabel("Details");
+        JLabel seedLabel = new JLabel("Seed");
 
         rowsInput = new JSpinner(new MazeSizeSpinnerModel());
         rowsInput.setValue(10);
@@ -49,6 +51,8 @@ public class MazeCreationMenuPartialView extends PartialView implements ActionLi
         algorithmSelectionComboBox = new JComboBox<>(GeneratorFactory.ALGORITHMS);
         algorithmSelectionComboBox.setSelectedIndex(0);
 
+        seedTextField = new PromptTextField("Seed");
+
         mazeNameTextField = new PromptTextField("Maze Name");
         authornameTextField = new PromptTextField("Author Name");
         descriptionTextArea = new PromptTextArea("Description");
@@ -60,6 +64,7 @@ public class MazeCreationMenuPartialView extends PartialView implements ActionLi
                         .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                                 .addComponent(sizeLabel)
                                 .addComponent(algorithmLabel)
+                                .addComponent(seedLabel)
                                 .addComponent(detailsLabel)
                         )
                         .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -68,6 +73,7 @@ public class MazeCreationMenuPartialView extends PartialView implements ActionLi
                                         .addComponent(colsInput)
                                 )
                                 .addComponent(algorithmSelectionComboBox)
+                                .addComponent(seedTextField)
                         )
                 )
                 .addComponent(mazeNameTextField)
@@ -89,6 +95,10 @@ public class MazeCreationMenuPartialView extends PartialView implements ActionLi
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                         .addComponent(algorithmLabel)
                         .addComponent(algorithmSelectionComboBox)
+                )
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                        .addComponent(seedLabel)
+                        .addComponent(seedTextField)
                 )
                 .addComponent(detailsLabel)
                 .addComponent(mazeNameTextField)
@@ -120,7 +130,13 @@ public class MazeCreationMenuPartialView extends PartialView implements ActionLi
             case "Create" -> {
 //                Main.createMazeView(getRows(), getColumns());
                 view.addMazeView(getRows(), getColumns());
-                view.setMazeGenerator(algorithmSelectionComboBox.getSelectedIndex());
+                long seed;
+                if (seedTextField.getText().isEmpty()){
+                    seed = new Random().nextLong();
+                    seedTextField.setPromptText(String.valueOf(seed));
+                } else seed = Long.parseLong(seedTextField.getText());
+
+                view.setMazeGenerator(algorithmSelectionComboBox.getSelectedIndex(), seed);
                 view.renderMazeView();
                 view.requestFocus();
                 saveButton.setEnabled(true);

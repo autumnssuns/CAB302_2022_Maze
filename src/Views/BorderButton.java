@@ -84,7 +84,6 @@ public class BorderButton extends JButton implements MouseListener {
     private boolean clicked = false;
     @Override
     public void mouseReleased(MouseEvent e) {
-        System.out.println("Released");
         if (!clicked){
             action();
             clicked = true;
@@ -93,7 +92,6 @@ public class BorderButton extends JButton implements MouseListener {
 
     @Override
     public void mouseEntered(MouseEvent e) {
-        System.out.println("Entered");
         action();
         setOpaque(true);
         setBackground(Color.GRAY);
@@ -102,7 +100,6 @@ public class BorderButton extends JButton implements MouseListener {
 
     @Override
     public void mouseExited(MouseEvent e) {
-        System.out.println("Exited");
         if (!clicked){
             action();
         }

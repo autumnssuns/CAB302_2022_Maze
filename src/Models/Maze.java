@@ -18,10 +18,11 @@ public class Maze implements Iterable<MazeNode>{
         nodes = new ArrayList<>();
     }
 
-    public void setGenerator(int generatorType){
+    public void setGenerator(int generatorType, long seed){
         GeneratorFactory factory = new GeneratorFactory(this);
         this.generatorType = generatorType;
         this.generator = factory.create(generatorType);
+        this.generator.setSeed(seed);
     }
 
     public int getGeneratorType(){

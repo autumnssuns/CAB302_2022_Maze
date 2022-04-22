@@ -13,7 +13,6 @@ public class GrowingTreeGenerator extends Generator{
     }
 
     public void createMaze(MazeNode startVertex) {
-        Random rnd = new Random();
         ArrayList<MazeNode> visited = new ArrayList<>();
         ArrayList<MazeNode> vertices = new ArrayList<>();
         vertices.add(startVertex);

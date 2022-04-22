@@ -15,7 +15,11 @@ public abstract class Generator {
     public Generator(Maze maze){
         states = new ArrayList<>();
         this.maze = maze;
-        rnd = new Random();
+//        rnd = new Random();
+    }
+
+    public void setSeed(long seed){
+        rnd = new Random(seed);
     }
 
     public void addFrame(MazeNode node){

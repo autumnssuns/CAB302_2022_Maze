@@ -39,8 +39,9 @@ public class MazePartialView extends PartialView implements ActionListener {
         current = maze.getRoot();
     }
 
-    public void setGenerator(int generatorType){
-        maze.setGenerator(generatorType);
+
+    public void setGenerator(int generatorType, long seed){
+        maze.setGenerator(generatorType, seed);
     }
 
     public void render(){
@@ -82,7 +83,6 @@ public class MazePartialView extends PartialView implements ActionListener {
                 add(buttonHorizontal);
             }
         }
-//        System.out.println(rowsTimer.isRunning());
         for (int i = 0; i < rows; i++){
             for (int j = 0; j < cols; j++){
                 NodeButton nodeButton = new NodeButton(maze.get(i,j));
@@ -122,11 +122,8 @@ public class MazePartialView extends PartialView implements ActionListener {
         maze.generate();
 
         ArrayList<StateFrame> steps = maze.getFrames();
-        System.out.println(steps);
-
-        steps.forEach(n -> System.out.println(n.getState()));
         animateSteps(steps);
-//        nodeButtons.forEach(NodeButton::repaintWalls);
+
         current.getAttachedButton().setBackground(Color.RED);
 
         int maxHeight = (size) * rows + weight;
@@ -137,6 +134,10 @@ public class MazePartialView extends PartialView implements ActionListener {
     }
 
     public void animateSteps(ArrayList<StateFrame> steps){
+        if (steps.size() <= 0) {
+            nodeButtons.forEach(NodeButton::repaintWalls);
+            return;
+        }
         boolean blankStart = GeneratorFactory.isCreative(maze.getGeneratorType());
         hButtons.forEach(x -> {
             if (x.isToggleable()) x.paintBorder(!blankStart);

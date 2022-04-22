@@ -192,7 +192,6 @@ public class NodeButton extends JButton implements MouseListener {
     @Override
     public void mouseEntered(MouseEvent e) {
         getParent().repaint();
-        System.out.println("Attempt to reprint");
     }
 
     @Override

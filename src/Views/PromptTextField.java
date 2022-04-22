@@ -27,6 +27,9 @@ public class PromptTextField extends JTextField implements FocusListener {
 
     public void setPromptText(String promptText) {
         this.promptText = promptText;
+        super.setText(promptText);
+        active = true;
+        changeColor();
     }
 
     @Override
@@ -45,6 +48,12 @@ public class PromptTextField extends JTextField implements FocusListener {
             active = true;
             changeColor();
         }
+    }
+
+    public void writeText(String text){
+        super.setText(text);
+        active = false;
+        changeColor();
     }
 
     @Override

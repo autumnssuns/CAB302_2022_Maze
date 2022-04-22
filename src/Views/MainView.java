@@ -105,9 +105,10 @@ public class MainView extends JFrame implements KeyListener, Runnable {
 //        mazePartialView.setAlignmentX(Component.CENTER_ALIGNMENT);
     }
 
-    public void setMazeGenerator(int generatorType){
-        mazePartialView.setGenerator(generatorType);
+    public void setMazeGenerator(int generatorType, long seed){
+        mazePartialView.setGenerator(generatorType, seed);
     }
+
 
     public void clearMazeView(){
         mazePartialView.clear();
@@ -143,7 +144,6 @@ public class MainView extends JFrame implements KeyListener, Runnable {
         mazePartialViewContainer.setPreferredSize(mazePartialView.getSize());
         mazePartialViewContainer.setMaximumSize(mazePartialView.getSize());
         mazePartialViewContainer.setMinimumSize(mazePartialView.getSize());
-        System.out.println("Maze View Size " + mazePartialView.getSize());
         toggleMazeGrid(showingGrid);
     }
 
