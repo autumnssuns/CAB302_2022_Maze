@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
 
 public class MainView extends JFrame implements KeyListener, Runnable {
     private MazePartialView mazePartialView;
@@ -12,6 +13,7 @@ public class MainView extends JFrame implements KeyListener, Runnable {
     private JPanel editorContainer;
     private JPanel mazePartialViewContainer;
 
+    private boolean showingAnimation;
     private boolean showingGrid;
     private boolean showingSolution;
 
@@ -150,5 +152,21 @@ public class MainView extends JFrame implements KeyListener, Runnable {
     public void toggleMazeSolution(boolean state) {
         showingSolution = state;
         mazePartialView.repaint();
+    }
+
+    public void toggleAnimation(boolean state){
+        showingAnimation = state;
+        if (mazePartialView != null){
+            if (state) mazePartialView.startAnimation();
+            else mazePartialView.stopAnimation();
+        }
+    }
+
+    public boolean isShowingAnimation() {
+        return showingAnimation;
+    }
+
+    public void setShowingAnimation(boolean showingAnimation) {
+        this.showingAnimation = showingAnimation;
     }
 }

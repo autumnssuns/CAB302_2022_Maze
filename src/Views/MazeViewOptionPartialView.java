@@ -7,7 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class MazeViewOptionPartialView extends PartialView implements ActionListener {
-    private final JCheckBox showGridCheckbox, showSolutionCheckbox;
+    private final JCheckBox showCreationAnimationCheckbox, showGridCheckbox, showSolutionCheckbox;
 
     public MazeViewOptionPartialView(MainView view) {
         super(view);
@@ -15,6 +15,11 @@ public class MazeViewOptionPartialView extends PartialView implements ActionList
         layout.setAutoCreateGaps(true);
         layout.setAutoCreateContainerGaps(true);
         setLayout(layout);
+
+        showCreationAnimationCheckbox = new JCheckBox("Show Creation Animation");
+        showCreationAnimationCheckbox.setSelected(true);
+        view.setShowingAnimation(showCreationAnimationCheckbox.getModel().isSelected());
+        showCreationAnimationCheckbox.addActionListener(this);
 
         showGridCheckbox = new JCheckBox("Show Grid");
         showGridCheckbox.setSelected(true);
@@ -27,11 +32,13 @@ public class MazeViewOptionPartialView extends PartialView implements ActionList
         showSolutionCheckbox.addActionListener(this);
 
         layout.setHorizontalGroup(layout.createParallelGroup()
+                .addComponent(showCreationAnimationCheckbox)
                 .addComponent(showGridCheckbox)
                 .addComponent(showSolutionCheckbox)
         );
 
         layout.setVerticalGroup(layout.createSequentialGroup()
+                .addComponent(showCreationAnimationCheckbox)
                 .addComponent(showGridCheckbox)
                 .addComponent(showSolutionCheckbox)
         );
@@ -49,6 +56,12 @@ public class MazeViewOptionPartialView extends PartialView implements ActionList
             JCheckBox source = (JCheckBox) e.getSource();
             boolean state = (source.getModel().isSelected());
             view.toggleMazeSolution(state);
+        }
+
+        if (e.getSource() == showCreationAnimationCheckbox){
+            JCheckBox source = (JCheckBox) e.getSource();
+            boolean state = (source.getModel().isSelected());
+            view.toggleAnimation(state);
         }
     }
 }

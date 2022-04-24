@@ -1,6 +1,5 @@
 package Views;
 
-import Generators.Generator;
 import Generators.GeneratorFactory;
 import Models.*;
 
@@ -11,13 +10,13 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class MazePartialView extends PartialView implements ActionListener {
 
     private ArrayList<BorderButton> vButtons = new ArrayList<>();
     private ArrayList<BorderButton> hButtons = new ArrayList<>();
     private ArrayList<NodeButton> nodeButtons;
+    private Timer animationTimer;
 
     private int rows, cols;
     private Maze maze;
@@ -122,7 +121,12 @@ public class MazePartialView extends PartialView implements ActionListener {
         maze.generate();
 
         ArrayList<StateFrame> steps = maze.getFrames();
-        animateSteps(steps);
+        createTimer(steps);
+        if (view.isShowingAnimation()){
+            animationTimer.start();
+        } else {
+            nodeButtons.forEach(NodeButton::repaintWalls);
+        }
 
         current.getAttachedButton().setBackground(Color.RED);
 
@@ -133,11 +137,17 @@ public class MazePartialView extends PartialView implements ActionListener {
         setVisible(true);
     }
 
-    public void animateSteps(ArrayList<StateFrame> steps){
-        if (steps.size() <= 0) {
-            nodeButtons.forEach(NodeButton::repaintWalls);
-            return;
-        }
+    public void startAnimation(){
+        createTimer(maze.getFrames());
+        animationTimer.restart();
+    }
+
+    public void stopAnimation(){
+        nodeButtons.forEach(NodeButton::repaintWalls);
+        if (animationTimer.isRunning()) animationTimer.stop();
+    }
+
+    public void createTimer(ArrayList<StateFrame> steps){
         boolean blankStart = GeneratorFactory.isCreative(maze.getGeneratorType());
         hButtons.forEach(x -> {
             if (x.isToggleable()) x.paintBorder(!blankStart);
@@ -145,11 +155,10 @@ public class MazePartialView extends PartialView implements ActionListener {
         vButtons.forEach(x -> {
             if (x.isToggleable()) x.paintBorder(!blankStart);
         });
-
         int interval = 1;
         int end = interval * steps.size();
 //        maze.disconnectAll();
-        new Timer(interval, new ActionListener() {
+        animationTimer = new Timer(interval, new ActionListener() {
             int currentTime = 0;
 
             @Override
@@ -173,7 +182,7 @@ public class MazePartialView extends PartialView implements ActionListener {
                     ((Timer)e.getSource()).stop();
                 }
             }
-        }).start();
+        });
     }
 
     public void showSolution(Graphics2D g){
