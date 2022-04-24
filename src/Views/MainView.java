@@ -1,10 +1,11 @@
 package Views;
 
+import Models.Maze;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.ArrayList;
 
 public class MainView extends JFrame implements KeyListener, Runnable {
     private MazePartialView mazePartialView;
@@ -139,6 +140,10 @@ public class MainView extends JFrame implements KeyListener, Runnable {
     @Override
     public void run() {
         createGUI();
+    }
+
+    public Maze getMaze(){
+        return mazePartialView.getMaze();
     }
 
     public void renderMazeView() {

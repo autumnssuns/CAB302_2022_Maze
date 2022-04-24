@@ -278,4 +278,8 @@ public class MazePartialView extends PartialView implements ActionListener {
     public void export(String path){
         // TODO: Export as images
     }
+
+    public Maze getMaze() {
+        return maze;
+    }
 }

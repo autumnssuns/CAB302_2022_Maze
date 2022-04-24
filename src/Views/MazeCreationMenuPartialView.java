@@ -1,6 +1,8 @@
 package Views;
 
+import Controllers.MazeCreationController;
 import Generators.GeneratorFactory;
+import Models.Maze;
 
 import javax.swing.*;
 import java.awt.*;
@@ -153,8 +155,13 @@ public class MazeCreationMenuPartialView extends PartialView implements ActionLi
                 exportButton.setEnabled(false);
 //                showGridCheckbox.setEnabled(false);
             }
-            case "Export" -> {
+            case "Save" -> {
+                String name = mazeNameTextField.getText();
+                String author = authornameTextField.getText();
+                String description = descriptionTextArea.getText();
 
+                Maze maze = view.getMaze();
+                MazeCreationController.addMaze(name, author, description, maze);
             }
         }
     }
