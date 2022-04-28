@@ -53,7 +53,7 @@ public class MainView extends JFrame implements KeyListener, Runnable {
 
         editorLoadContainer = new ThinSplitPane(JSplitPane.HORIZONTAL_SPLIT, editorContainer, loadContainer);
         editorContainer.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 0, Color.BLACK));
-        editorContainer.setPreferredSize(new Dimension(1000, 800));
+        editorContainer.setPreferredSize(new Dimension(950, 800));
 
         mainContainer = new ThinSplitPane(JSplitPane.HORIZONTAL_SPLIT, menuContainer, editorLoadContainer);
         mainContainer.setOneTouchExpandable(true);
