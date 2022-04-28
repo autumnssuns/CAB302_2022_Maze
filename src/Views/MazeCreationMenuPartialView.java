@@ -162,6 +162,7 @@ public class MazeCreationMenuPartialView extends PartialView implements ActionLi
 
                 Maze maze = view.getMaze();
                 MazeCreationController.addMaze(name, author, description, maze);
+                view.reloadSavedMazes();
             }
         }
     }

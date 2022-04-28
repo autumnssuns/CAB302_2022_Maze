@@ -29,6 +29,6 @@ public class ThinSplitPane extends JSplitPane {
                 };
             }
         });
-        setBorder(BorderFactory.createLineBorder(Color.GRAY, 1, true));
+        setBorder(BorderFactory.createMatteBorder(0, 0, 0,0, Color.GRAY));
     }
 }

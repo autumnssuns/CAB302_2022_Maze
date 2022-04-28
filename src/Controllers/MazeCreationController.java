@@ -34,6 +34,5 @@ public class MazeCreationController {
 
         MazeDataSource dataSource = new MazeDataSource();
         dataSource.addMaze(model);
-        dataSource.close();
     }
 }

@@ -9,10 +9,12 @@ import java.awt.event.KeyListener;
 
 public class MainView extends JFrame implements KeyListener, Runnable {
     private MazePartialView mazePartialView;
-    private ThinSplitPane mainContainer;
+    private MazeLoadMenuPartialView mazeLoadMenuPartialView;
+    private ThinSplitPane mainContainer, editorLoadContainer;
     private JPanel menuContainer;
     private JPanel editorContainer;
     private JPanel mazePartialViewContainer;
+    private JPanel loadContainer;
 
     private boolean showingAnimation;
     private boolean showingGrid;
@@ -43,10 +45,17 @@ public class MainView extends JFrame implements KeyListener, Runnable {
 
         getContentPane().setLayout(new BorderLayout());
         menuContainer = new JPanel(new BorderLayout());
+
+        loadContainer = new JPanel(new BorderLayout());
+
         editorContainer = new JPanel();
         editorContainer.setLayout(new BoxLayout(editorContainer, BoxLayout.X_AXIS));
 
-        mainContainer = new ThinSplitPane(JSplitPane.HORIZONTAL_SPLIT, menuContainer, editorContainer);
+        editorLoadContainer = new ThinSplitPane(JSplitPane.HORIZONTAL_SPLIT, editorContainer, loadContainer);
+        editorContainer.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 0, Color.BLACK));
+        editorContainer.setPreferredSize(new Dimension(1000, 800));
+
+        mainContainer = new ThinSplitPane(JSplitPane.HORIZONTAL_SPLIT, menuContainer, editorLoadContainer);
         mainContainer.setOneTouchExpandable(true);
 
         mazePartialViewContainer = new JPanel(new BorderLayout());
@@ -66,10 +75,14 @@ public class MainView extends JFrame implements KeyListener, Runnable {
 
         addLabel(); // PAGE START
         addMenu();  // LINE START
+        mazeLoadMenuPartialView = new MazeLoadMenuPartialView(this);
+
+        loadContainer.add(mazeLoadMenuPartialView);
 
         getContentPane().add(new JPanel(), BorderLayout.PAGE_END);
         getContentPane().add(new JPanel(), BorderLayout.LINE_END);
 
+        mazeLoadMenuPartialView.reloadMazes();
         repaint();
         setVisible(true);
     }
@@ -173,5 +186,9 @@ public class MainView extends JFrame implements KeyListener, Runnable {
 
     public void setShowingAnimation(boolean showingAnimation) {
         this.showingAnimation = showingAnimation;
+    }
+
+    public void reloadSavedMazes(){
+        mazeLoadMenuPartialView.reloadMazes();
     }
 }
