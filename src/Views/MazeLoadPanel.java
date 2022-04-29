@@ -1,5 +1,6 @@
 package Views;
 
+import DatabaseConnection.MazeDataSource;
 import Models.Maze;
 
 import javax.imageio.ImageIO;
@@ -12,17 +13,19 @@ import java.io.IOException;
 
 public class MazeLoadPanel extends JPanel {
     private String mazeName, authorName;
-
+    private JButton deleteButton;
     private JPanel namePanel, datesPanel, previewPanel;
     private JLabel nameLabel, authorLabel, creationDateLabel, modifiedDateLabel;
     private JTextArea descriptionTextArea;
-
+    private MazeLoadMenuPartialView container;
     private int IMAGE_SIZE = 90;
 
-    public MazeLoadPanel(String name){
+    public MazeLoadPanel(String name, MazeLoadMenuPartialView container){
+        this.container = container;
         this.setLayout(new BorderLayout());
         this.setMinimumSize(new Dimension(300, 150));
         this.setPreferredSize(new Dimension(300, 150));
+        this.setMaximumSize(new Dimension(300, 150));
         this.setBorder(new EmptyBorder(10, 10, 10, 10));
 
         mazeName = name;
@@ -70,8 +73,29 @@ public class MazeLoadPanel extends JPanel {
         authorLabel.setFont(authorLabel.getFont().deriveFont(Font.ITALIC, 10f));
         authorLabel.setBorder(new EmptyBorder(0, 10, 0, 0));
 
+        JPanel deletePanel = new JPanel(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+        c.fill = GridBagConstraints.NONE;
+        c.anchor = GridBagConstraints.FIRST_LINE_END;
+        c.weightx = 1;
+
+        deleteButton = new JButton("X");
+        deleteButton.setMargin(new Insets(0,0,0,0));
+        deleteButton.setPreferredSize(new Dimension(20,20));
+//        deleteButton.setMaximumSize(new Dimension(10,10));
+        deleteButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
+        deleteButton.setFont(deleteButton.getFont().deriveFont(10f));
+        deleteButton.addActionListener(e -> {
+            MazeDataSource dataSource = new MazeDataSource();
+            dataSource.deleteMaze(this.mazeName);
+            container.reloadMazes();
+        });
+
+        deletePanel.add(deleteButton, c);
+
         namePanel.add(nameLabel);
         namePanel.add(authorLabel);
+        namePanel.add(deletePanel);
     }
 
     private void createDatesPanel(){

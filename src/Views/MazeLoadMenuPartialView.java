@@ -41,7 +41,7 @@ public class MazeLoadMenuPartialView extends PartialView implements ActionListen
         MazeDataSource dataSource = new MazeDataSource();
         Set<String> names = dataSource.getNames();
         names.forEach(n -> {
-            this.names.add(new MazeLoadPanel(n));
+            this.names.add(new MazeLoadPanel(n, this));
         });
         this.names.forEach(label -> {
             contentPanel.add(label);
