@@ -21,11 +21,11 @@ public class NodeButton extends JButton implements MouseListener {
 //        this.addActionListener(e -> changeColour());
     }
 
-    public void connectAll(){
-        top = node.getTop() != null? node.getTop().getAttachedButton() : null;
-        bottom = node.getBottom() != null ? node.getBottom().getAttachedButton() : null;
-        left = node.getLeft() != null? node.getLeft().getAttachedButton() : null;
-        right = node.getRight() != null? node.getRight().getAttachedButton() : null;
+    public void connectAll(NodeButton top, NodeButton bottom, NodeButton left, NodeButton right){
+        this.top = top;
+        this.bottom = bottom;
+        this.left = left;
+        this.right = right;
     }
 
     public void repaintWalls(){

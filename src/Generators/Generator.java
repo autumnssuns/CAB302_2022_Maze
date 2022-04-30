@@ -11,6 +11,7 @@ public abstract class Generator {
     protected Maze maze;
     protected ArrayList<StateFrame> states;
     protected Random rnd;
+    protected long seed;
 
     public Generator(Maze maze){
         states = new ArrayList<>();
@@ -19,6 +20,7 @@ public abstract class Generator {
     }
 
     public void setSeed(long seed){
+        this.seed = seed;
         rnd = new Random(seed);
     }
 
@@ -41,5 +43,9 @@ public abstract class Generator {
         if (col > 0) neighbours.add(maze.get(row, col - 1));
         if (col < maze.getSize(1) - 1) neighbours.add(maze.get(row, col + 1));
         return neighbours;
+    }
+
+    public long getSeed() {
+        return seed;
     }
 }

@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
+import java.util.stream.IntStream;
 
 public class MazePartialView extends PartialView implements ActionListener {
 
@@ -22,29 +23,50 @@ public class MazePartialView extends PartialView implements ActionListener {
     private Maze maze;
     private MazeNode current;
 
-    public MazePartialView (MainView container, int rows, int cols){
+    public MazePartialView (MainView container, Maze maze){
         super(container);
         this.setBackground(Color.WHITE);
-        setMazeSize(rows, cols);
+        setMaze(maze);
     }
 
-    public void setMazeSize(int rows, int cols){
-        this.maze = new Maze(rows, cols);
-        this.rows = rows;
-        this.cols = cols;
+    public void setMaze(Maze maze){
+        this.maze = maze;
+        this.rows = maze.getSize(0);
+        this.cols = maze.getSize(1);
         nodeButtons = new ArrayList<>();
         hButtons = new ArrayList<>();
         vButtons = new ArrayList<>();
         current = maze.getRoot();
     }
 
-
     public void setGenerator(int generatorType, long seed){
         maze.setGenerator(generatorType, seed);
     }
 
     public void render(){
-//        int size = (int) Math.floor(Math.min((675 + 1.2 * rows) / rows, (675 + 1.2 * cols) / cols));
+        renderButtons();
+        if (!maze.isLocked()) generate();
+        else nodeButtons.forEach(NodeButton::repaintWalls);
+        current.getAttachedButton().setBackground(Color.RED);
+        setVisible(true);
+    }
+
+    private void generate(){
+//        maze.connectAll();
+//        nodeButtons.forEach(NodeButton::connectAll);
+        maze.disconnectAll();
+        maze.generate();
+        ArrayList<StateFrame> steps = maze.getFrames();
+        createTimer(steps);
+        if (view.isShowingAnimation()){
+            animationTimer.start();
+        } else {
+            nodeButtons.forEach(NodeButton::repaintWalls);
+        }
+    }
+
+    private void renderButtons(){
+        //        int size = (int) Math.floor(Math.min((675 + 1.2 * rows) / rows, (675 + 1.2 * cols) / cols));
         float sig = Math.max(rows, cols);
         float numerator = sig > 2 ? 675 : sig == 2 ? 650 : 600;
         int size = (int) Math.ceil(numerator / sig) + 1;
@@ -52,6 +74,9 @@ public class MazePartialView extends PartialView implements ActionListener {
         Dimension horizontalSize = new Dimension(size + weight, weight);
         Dimension verticalSize = new Dimension(weight, size + weight);
         setLayout(null);
+        int maxHeight = (size) * rows + weight;
+        int maxWidth = (size) * cols + weight;
+        setSize(new Dimension(maxWidth, maxHeight));
 
         for (int i = 0; i <= cols; i++){
             for (int j = 0; j < rows; j++){
@@ -113,28 +138,16 @@ public class MazePartialView extends PartialView implements ActionListener {
             }
         }
 
-        maze.connectAll();
-        nodeButtons.forEach(NodeButton::connectAll);
-        maze.disconnectAll();
-
-//        nodeButtons.forEach(NodeButton::repaintWalls);
-        maze.generate();
-
-        ArrayList<StateFrame> steps = maze.getFrames();
-        createTimer(steps);
-        if (view.isShowingAnimation()){
-            animationTimer.start();
-        } else {
-            nodeButtons.forEach(NodeButton::repaintWalls);
-        }
-
-        current.getAttachedButton().setBackground(Color.RED);
-
-        int maxHeight = (size) * rows + weight;
-        int maxWidth = (size) * cols + weight;
-        setSize(new Dimension(maxWidth, maxHeight));
-
-        setVisible(true);
+        IntStream.range(0, nodeButtons.size()).forEach(idx -> {
+            NodeButton n = nodeButtons.get(idx);
+            int row = idx / cols;
+            int col = idx % cols;
+            NodeButton top = row == 0 ? null : nodeButtons.get((row - 1) * cols + col);
+            NodeButton bottom = row == rows - 1 ? null : nodeButtons.get((row + 1) * cols + col);
+            NodeButton left = col == 0 ? null : nodeButtons.get(row * cols + col - 1);
+            NodeButton right = col == cols - 1 ? null : nodeButtons.get(row * cols + col + 1);
+            n.connectAll(top, bottom, left, right);
+        });
     }
 
     public void startAnimation(){
@@ -147,7 +160,7 @@ public class MazePartialView extends PartialView implements ActionListener {
         if (animationTimer.isRunning()) animationTimer.stop();
     }
 
-    public void createTimer(ArrayList<StateFrame> steps){
+    private void createTimer(ArrayList<StateFrame> steps){
         boolean blankStart = GeneratorFactory.isCreative(maze.getGeneratorType());
         hButtons.forEach(x -> {
             if (x.isToggleable()) x.paintBorder(!blankStart);

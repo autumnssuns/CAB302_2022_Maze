@@ -1,6 +1,6 @@
 package Models;
 
-public record MazeDataModel(int idx, String name, String author, String description, int rowsCount, int colsCount, MazeNodeDataModel mazeNodes) {
+public record MazeDataModel(int idx, String name, String author, String description, int algorithm, long seed, int rowsCount, int colsCount, MazeNodeDataModel mazeNodes) {
     public Maze unpack(){
         Maze maze = new Maze(rowsCount, colsCount);
         maze.disconnectAll();

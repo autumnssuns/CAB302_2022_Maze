@@ -21,6 +21,13 @@ public class PromptTextArea extends JTextArea implements FocusListener {
         changeColor();
     }
 
+    public void writeText(String text){
+        if (text.isEmpty()) return;
+        super.setText(text);
+        active = false;
+        changeColor();
+    }
+
     public String getPromptText() {
         return promptText;
     }

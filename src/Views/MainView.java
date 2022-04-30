@@ -1,6 +1,7 @@
 package Views;
 
 import Models.Maze;
+import Models.MazeDataModel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,6 +11,8 @@ import java.awt.event.KeyListener;
 public class MainView extends JFrame implements KeyListener, Runnable {
     private MazePartialView mazePartialView;
     private MazeLoadMenuPartialView mazeLoadMenuPartialView;
+    private MazeCreationMenuPartialView mazeCreationMenuPartialView;
+    private MazeViewOptionPartialView mazeViewOptionPartialView;
     private ThinSplitPane mainContainer, editorLoadContainer;
     private JPanel menuContainer;
     private JPanel editorContainer;
@@ -34,6 +37,10 @@ public class MainView extends JFrame implements KeyListener, Runnable {
 
     public void setShowingSolution(boolean showingSolution) {
         this.showingSolution = showingSolution;
+    }
+
+    public void loadMazeProperties(MazeDataModel mazeModel){
+
     }
 
     public void createGUI(){
@@ -95,8 +102,8 @@ public class MainView extends JFrame implements KeyListener, Runnable {
     }
 
     public void addMenu(){
-        MazeCreationMenuPartialView mazeCreationMenuPartialView = new MazeCreationMenuPartialView(this);
-        MazeViewOptionPartialView mazeViewOptionPartialView = new MazeViewOptionPartialView(this);
+        mazeCreationMenuPartialView = new MazeCreationMenuPartialView(this);
+        mazeViewOptionPartialView = new MazeViewOptionPartialView(this);
 
         ThinSplitPane container = new ThinSplitPane(JSplitPane.VERTICAL_SPLIT, mazeCreationMenuPartialView, mazeViewOptionPartialView);
         container.setOneTouchExpandable(true);
@@ -107,24 +114,26 @@ public class MainView extends JFrame implements KeyListener, Runnable {
     public void addMazeView(int rows, int cols){
 //        JPanel container = new JPanel();
 //        container.setLayout(new BoxLayout(container, BoxLayout.X_AXIS));
+        Maze maze = new Maze(rows, cols);
+        addMazeView(maze);
+    }
 
+    public void addMazeView(Maze maze){
         if (mazePartialView == null){
-            mazePartialView = new MazePartialView(this, rows, cols);
+            mazePartialView = new MazePartialView(this, maze);
             mazePartialViewContainer.add(mazePartialView);
         } else {
-            mazePartialView.setMazeSize(rows, cols);
+            mazePartialView.setMaze(maze);
         }
+    }
 
-//        container.add(new JPanel());
-//        container.add(mazePartialView);
-//        container.add(new JPanel());
-//        mazePartialView.setAlignmentX(Component.CENTER_ALIGNMENT);
+    public void loadMaze(MazeDataModel mazeModel) {
+        mazeCreationMenuPartialView.loadMaze(mazeModel);
     }
 
     public void setMazeGenerator(int generatorType, long seed){
         mazePartialView.setGenerator(generatorType, seed);
     }
-
 
     public void clearMazeView(){
         mazePartialView.clear();
@@ -191,4 +200,5 @@ public class MainView extends JFrame implements KeyListener, Runnable {
     public void reloadSavedMazes(){
         mazeLoadMenuPartialView.reloadMazes();
     }
+
 }

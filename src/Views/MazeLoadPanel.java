@@ -2,25 +2,31 @@ package Views;
 
 import DatabaseConnection.MazeDataSource;
 import Models.Maze;
+import Models.MazeDataModel;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-public class MazeLoadPanel extends JPanel {
+public class MazeLoadPanel extends JPanel implements ActionListener {
     private String mazeName, authorName;
-    private JButton deleteButton;
+    private JButton deleteButton, loadButton;
     private JPanel namePanel, datesPanel, previewPanel;
     private JLabel nameLabel, authorLabel, creationDateLabel, modifiedDateLabel;
     private JTextArea descriptionTextArea;
     private MazeLoadMenuPartialView container;
     private int IMAGE_SIZE = 90;
+    private MazeDataSource dataSource;
 
     public MazeLoadPanel(String name, MazeLoadMenuPartialView container){
+        dataSource = new MazeDataSource();
+
         this.container = container;
         this.setLayout(new BorderLayout());
         this.setMinimumSize(new Dimension(300, 150));
@@ -51,12 +57,10 @@ public class MazeLoadPanel extends JPanel {
             graphics2D.drawImage(myPicture, 0, 0, IMAGE_SIZE, IMAGE_SIZE, null);
             graphics2D.dispose();
 
-            JButton imageHolder = new JButton(new ImageIcon(resizedImage));
-            imageHolder.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
-            imageHolder.addActionListener(e -> {
-                System.out.println("Reloading Maze");
-            });
-            previewPanel.add(imageHolder);
+            loadButton = new JButton(new ImageIcon(resizedImage));
+            loadButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+            loadButton.addActionListener(this);
+            previewPanel.add(loadButton);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -85,11 +89,7 @@ public class MazeLoadPanel extends JPanel {
 //        deleteButton.setMaximumSize(new Dimension(10,10));
         deleteButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
         deleteButton.setFont(deleteButton.getFont().deriveFont(10f));
-        deleteButton.addActionListener(e -> {
-            MazeDataSource dataSource = new MazeDataSource();
-            dataSource.deleteMaze(this.mazeName);
-            container.reloadMazes();
-        });
+        deleteButton.addActionListener(this);
 
         deletePanel.add(deleteButton, c);
 
@@ -116,5 +116,19 @@ public class MazeLoadPanel extends JPanel {
     private void createDescriptionTextArea(){
         descriptionTextArea = new JTextArea("Author's description");
         descriptionTextArea.setEditable(false);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == deleteButton){
+            dataSource.deleteMaze(this.mazeName);
+            container.reloadMazes();
+        }
+
+        if (e.getSource() == loadButton){
+            MazeDataModel mazeModel = dataSource.getMaze(mazeName);
+            container.loadMaze(mazeModel);
+            System.out.println("Loading maze " + mazeName);
+        }
     }
 }

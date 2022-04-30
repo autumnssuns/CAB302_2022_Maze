@@ -3,6 +3,7 @@ package Views;
 import Controllers.MazeCreationController;
 import Generators.GeneratorFactory;
 import Models.Maze;
+import Models.MazeDataModel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,7 +22,26 @@ public class MazeCreationMenuPartialView extends PartialView implements ActionLi
     private final JButton createButton, saveButton, exportButton;
     private final JComboBox algorithmSelectionComboBox;
     private final PromptTextField mazeNameTextField, authornameTextField, seedTextField;
-    private final JTextArea descriptionTextArea;
+    private final PromptTextArea descriptionTextArea;
+
+    public void loadMaze(MazeDataModel mazeModel){
+        rowsInput.setValue(mazeModel.rowsCount());
+        colsInput.setValue(mazeModel.colsCount());
+        algorithmSelectionComboBox.setSelectedIndex(mazeModel.algorithm());
+        seedTextField.writeText(String.valueOf(mazeModel.seed()));
+        mazeNameTextField.writeText(mazeModel.name());
+        authornameTextField.writeText(mazeModel.author());
+        descriptionTextArea.writeText(mazeModel.description());
+        view.requestFocus();
+        saveButton.setEnabled(true);
+//                createButton.setEnabled(false);
+        createButton.setText("Delete");
+        exportButton.setEnabled(true);
+
+        Maze maze = mazeModel.unpack();
+        maze.setLocked(true);
+        createMaze(maze);
+    }
 
     public MazeCreationMenuPartialView(MainView container){
         super(container);
@@ -124,6 +144,23 @@ public class MazeCreationMenuPartialView extends PartialView implements ActionLi
         return (int) colsInput.getValue();
     }
 
+    private void createMaze(Maze maze){
+        view.addMazeView(maze);
+        long seed;
+        if (seedTextField.getText().isEmpty()){
+            seed = new Random().nextLong();
+            seedTextField.setPromptText(String.valueOf(seed));
+        } else seed = Long.parseLong(seedTextField.getText());
+
+        view.setMazeGenerator(algorithmSelectionComboBox.getSelectedIndex(), seed);
+        view.renderMazeView();
+        view.requestFocus();
+        saveButton.setEnabled(true);
+//                createButton.setEnabled(false);
+        createButton.setText("Delete");
+        exportButton.setEnabled(true);
+//                showGridCheckbox.setEnabled(true);
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -131,21 +168,8 @@ public class MazeCreationMenuPartialView extends PartialView implements ActionLi
         switch (sourceButton.getText()) {
             case "Create" -> {
 //                Main.createMazeView(getRows(), getColumns());
-                view.addMazeView(getRows(), getColumns());
-                long seed;
-                if (seedTextField.getText().isEmpty()){
-                    seed = new Random().nextLong();
-                    seedTextField.setPromptText(String.valueOf(seed));
-                } else seed = Long.parseLong(seedTextField.getText());
-
-                view.setMazeGenerator(algorithmSelectionComboBox.getSelectedIndex(), seed);
-                view.renderMazeView();
-                view.requestFocus();
-                saveButton.setEnabled(true);
-//                createButton.setEnabled(false);
-                createButton.setText("Delete");
-                exportButton.setEnabled(true);
-//                showGridCheckbox.setEnabled(true);
+                Maze maze = new Maze(getRows(), getColumns());
+                createMaze(maze);
             }
             case "Delete" -> {
                 view.clearMazeView();

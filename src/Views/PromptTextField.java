@@ -51,6 +51,7 @@ public class PromptTextField extends JTextField implements FocusListener {
     }
 
     public void writeText(String text){
+        if (text.isEmpty()) return;
         super.setText(text);
         active = false;
         changeColor();

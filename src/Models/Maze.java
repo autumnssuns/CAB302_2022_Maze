@@ -13,6 +13,7 @@ public class Maze implements Iterable<MazeNode>{
     private int cols, rows;
     private Generator generator;
     private int generatorType;
+    private boolean locked;
 
     public Maze(){
         nodes = new ArrayList<>();
@@ -23,6 +24,10 @@ public class Maze implements Iterable<MazeNode>{
         this.generatorType = generatorType;
         this.generator = factory.create(generatorType);
         this.generator.setSeed(seed);
+    }
+
+    public long getSeed(){
+        return generator.getSeed();
     }
 
     public int getGeneratorType(){
@@ -222,5 +227,13 @@ public class Maze implements Iterable<MazeNode>{
 
     public void setRoot(MazeNode root) {
         this.root = root;
+    }
+
+    public boolean isLocked() {
+        return locked;
+    }
+
+    public void setLocked(boolean locked) {
+        this.locked = locked;
     }
 }

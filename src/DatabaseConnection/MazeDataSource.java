@@ -21,6 +21,8 @@ public class MazeDataSource {
                     + "name VARCHAR(30),"
                     + "author VARCHAR(30),"
                     + "description VARCHAR(20),"
+                    + "algorithm INTEGER,"
+                    + "seed INTEGER,"
                     + "rowsCount INTEGER,"
                     + "colsCount INTEGER"
                     + ");";
@@ -34,7 +36,7 @@ public class MazeDataSource {
                     + "FOREIGN KEY(mazeIdx) REFERENCES mazes(idx)"
                     + ");";
 
-    private static final String INSERT_MAZE = "INSERT INTO mazes (name, author, description, rowsCount, colsCount) VALUES (?, ?, ?, ?, ?);";
+    private static final String INSERT_MAZE = "INSERT INTO mazes (name, author, description, algorithm, seed, rowsCount, colsCount) VALUES (?, ?, ?, ?, ?, ?, ?);";
 
     private static final String INSERT_NODE = "INSERT INTO mazeNodes (mazeIdx, idx, neighbours) VALUES (?, ?, ?);";
 
@@ -42,7 +44,7 @@ public class MazeDataSource {
 
     private static final String GET_MAZE = "SELECT * FROM mazes WHERE name=?;";
 
-    private static final String GET_MAZE_NODES = "SELECT * FROM mazeNodes where idx=?;";
+    private static final String GET_MAZE_NODES = "SELECT * FROM mazeNodes where mazeIdx=?;";
 
     private static final String DELETE_MAZE = "DELETE FROM mazes WHERE name=?;";
 
@@ -76,8 +78,10 @@ public class MazeDataSource {
             addMaze.setString(1, maze.name());
             addMaze.setString(2, maze.author());
             addMaze.setString(3, maze.description());
-            addMaze.setInt(4, maze.rowsCount());
-            addMaze.setInt(5, maze.colsCount());
+            addMaze.setInt(4, maze.algorithm());
+            addMaze.setLong(5, maze.seed());
+            addMaze.setInt(6, maze.rowsCount());
+            addMaze.setInt(7, maze.colsCount());
             addMaze.executeUpdate();
 
             ResultSet generatedKeys = addMaze.getGeneratedKeys();
@@ -114,6 +118,8 @@ public class MazeDataSource {
             String mazeName = rs.getString("name");
             String mazeAuthor = rs.getString("author");
             String mazeDescription = rs.getString("description");
+            int mazeAlgorithm = rs.getInt("algorithm");
+            long mazeSeed = rs.getLong("seed");
             int mazeRowsCount = rs.getInt("rowsCount");
             int mazeColsCount = rs.getInt("colsCount");
             rs.close();
@@ -126,7 +132,7 @@ public class MazeDataSource {
                 String value = rs.getString("neighbours");
                 neighbours.put(key, value);
             }
-            return new MazeDataModel(mazeIdx, mazeName, mazeAuthor, mazeDescription, mazeRowsCount, mazeColsCount, new MazeNodeDataModel(neighbours));
+            return new MazeDataModel(mazeIdx, mazeName, mazeAuthor, mazeDescription, mazeAlgorithm, mazeSeed, mazeRowsCount, mazeColsCount, new MazeNodeDataModel(neighbours));
         }
         catch (SQLException e) {
             e.printStackTrace();

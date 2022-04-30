@@ -1,6 +1,8 @@
 package Views;
 
 import DatabaseConnection.MazeDataSource;
+import Models.Maze;
+import Models.MazeDataModel;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -50,6 +52,10 @@ public class MazeLoadMenuPartialView extends PartialView implements ActionListen
         contentPanel.revalidate();
         contentPanel.repaint();
         contentPanel.setVisible(true);
+    }
+
+    public void loadMaze(MazeDataModel mazeModel){
+        view.loadMaze(mazeModel);
     }
 
     @Override

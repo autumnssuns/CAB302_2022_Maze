@@ -30,7 +30,7 @@ public class MazeCreationController {
             neighbours.put(i, neighboursStr);
         }
 
-        MazeDataModel model = new MazeDataModel(idx, name, author, description, rowsCount, colsCount, new MazeNodeDataModel(neighbours));
+        MazeDataModel model = new MazeDataModel(idx, name, author, description, maze.getGeneratorType(), maze.getSeed(), rowsCount, colsCount, new MazeNodeDataModel(neighbours));
 
         MazeDataSource dataSource = new MazeDataSource();
         dataSource.addMaze(model);
