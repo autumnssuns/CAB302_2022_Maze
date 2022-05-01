@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.util.Random;
 
 public class MazeCreationMenuPartialView extends PartialView implements ActionListener {
@@ -185,8 +186,12 @@ public class MazeCreationMenuPartialView extends PartialView implements ActionLi
                 String description = descriptionTextArea.getText();
 
                 Maze maze = view.getMaze();
-                MazeCreationController.addOrEditMaze(name, author, description, maze);
+                ImageIcon icon = view.getMazeIcon();
+                MazeCreationController.addOrEditMaze(name, author, description, maze, icon);
                 view.reloadSavedMazes();
+            }
+            case "Export" -> {
+                view.saveMazeAsImage(mazeNameTextField.getText());
             }
         }
     }

@@ -48,22 +48,19 @@ public class MazeLoadPanel extends JPanel implements ActionListener {
 
     private void createPreviewHolder() {
         previewPanel = new JPanel(new FlowLayout());
-        BufferedImage myPicture = null;
-        try {
-            myPicture = ImageIO.read(new File("assets/100_100_Maze_BW.png"));
-            // https://www.baeldung.com/java-resize-image
-            BufferedImage resizedImage = new BufferedImage(IMAGE_SIZE, IMAGE_SIZE, BufferedImage.TYPE_INT_RGB);
-            Graphics2D graphics2D = resizedImage.createGraphics();
-            graphics2D.drawImage(myPicture, 0, 0, IMAGE_SIZE, IMAGE_SIZE, null);
-            graphics2D.dispose();
+        Image myPicture = model.icon().getImage();
+        //            myPicture = ImageIO.read(new File("assets/100_100_Maze_BW.png"));
+        // https://www.baeldung.com/java-resize-image
 
-            loadButton = new JButton(new ImageIcon(resizedImage));
-            loadButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
-            loadButton.addActionListener(this);
-            previewPanel.add(loadButton);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        BufferedImage resizedImage = new BufferedImage(IMAGE_SIZE, IMAGE_SIZE, BufferedImage.TYPE_INT_RGB);
+        Graphics2D graphics2D = resizedImage.createGraphics();
+        graphics2D.drawImage(myPicture, 0, 0, IMAGE_SIZE, IMAGE_SIZE, null);
+        graphics2D.dispose();
+
+        loadButton = new JButton(new ImageIcon(resizedImage));
+        loadButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+        loadButton.addActionListener(this);
+        previewPanel.add(loadButton);
     }
 
     private void createNamePanel(){

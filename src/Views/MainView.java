@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
 
 public class MainView extends JFrame implements KeyListener, Runnable {
     private MazePartialView mazePartialView;
@@ -201,4 +202,11 @@ public class MainView extends JFrame implements KeyListener, Runnable {
         mazeLoadMenuPartialView.reloadMazes();
     }
 
+    public void saveMazeAsImage(String name){
+        mazePartialView.saveImage(name);
+    }
+
+    public ImageIcon getMazeIcon() {
+        return mazePartialView.getIcon();
+    }
 }

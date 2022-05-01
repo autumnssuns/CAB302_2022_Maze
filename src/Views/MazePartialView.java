@@ -13,6 +13,7 @@ import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.Buffer;
 import java.util.ArrayList;
 import java.util.stream.IntStream;
 
@@ -233,6 +234,30 @@ public class MazePartialView extends PartialView implements ActionListener {
         super.paint(g);
         Graphics2D g2 = (Graphics2D) g;
         showSolution(g2);
+    }
+
+    public void saveImage(String name){
+        BufferedImage image = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
+        Graphics2D g2 = image.createGraphics();
+        paint(g2);
+        try {
+            ImageIO.write(image, "png", new File(name + ".png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public ImageIcon getIcon(){
+        BufferedImage image = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
+        Graphics2D g2 = image.createGraphics();
+        paint(g2);
+        g2.dispose();
+        Image tmp = image.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+        BufferedImage newImage = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g2d = newImage.createGraphics();
+        g2d.drawImage(tmp, 0, 0, null);
+        g2d.dispose();
+        return new ImageIcon(newImage);
     }
 
     public void move(int keyCode){
