@@ -240,8 +240,18 @@ public class MazePartialView extends PartialView implements ActionListener {
         BufferedImage image = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
         Graphics2D g2 = image.createGraphics();
         paint(g2);
+        g2.dispose();
+
+        int newWidth = cols * 16;
+        int newHeight = rows * 16;
+
+        Image tmp = image.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
+        BufferedImage newImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g2d = newImage.createGraphics();
+        g2d.drawImage(tmp, 0, 0, null);
+        g2d.dispose();
         try {
-            ImageIO.write(image, "png", new File(name + ".png"));
+            ImageIO.write(newImage, "png", new File(name + ".png"));
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -41,6 +41,7 @@ public class MazeCreationMenuPartialView extends PartialView implements ActionLi
 
         Maze maze = mazeModel.unpack();
         maze.setLocked(true);
+        clearMaze();
         createMaze(maze);
     }
 
@@ -163,6 +164,13 @@ public class MazeCreationMenuPartialView extends PartialView implements ActionLi
 //                showGridCheckbox.setEnabled(true);
     }
 
+    private void clearMaze(){
+        view.clearMazeView();
+        saveButton.setEnabled(false);
+        createButton.setText("Create");
+        exportButton.setEnabled(false);
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         JButton sourceButton = (JButton) e.getSource();
@@ -173,12 +181,7 @@ public class MazeCreationMenuPartialView extends PartialView implements ActionLi
                 createMaze(maze);
             }
             case "Delete" -> {
-                view.clearMazeView();
-                saveButton.setEnabled(false);
-//                createButton.setEnabled(true);
-                createButton.setText("Create");
-                exportButton.setEnabled(false);
-//                showGridCheckbox.setEnabled(false);
+                clearMaze();
             }
             case "Save" -> {
                 String name = mazeNameTextField.getText();

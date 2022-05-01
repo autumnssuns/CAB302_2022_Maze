@@ -137,7 +137,9 @@ public class MainView extends JFrame implements KeyListener, Runnable {
     }
 
     public void clearMazeView(){
-        mazePartialView.clear();
+        if (mazePartialView != null){
+            mazePartialView.clear();
+        }
     }
 
     public void toggleMazeGrid(boolean state){
