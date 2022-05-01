@@ -1,24 +1,27 @@
 package Views;
 
 import DatabaseConnection.MazeDataSource;
-import Models.Maze;
 import Models.MazeDataModel;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Set;
+import java.util.*;
 
 public class MazeLoadMenuPartialView extends PartialView implements ActionListener {
-    private ArrayList<MazeLoadPanel> names;
+    private ArrayList<MazeLoadPanel> panels;
     private JScrollPane scrollPane;
     private JPanel contentPanel;
+    private JComboBox sortComboBox;
+    private JCheckBox reverseCheckBox;
 
     public MazeLoadMenuPartialView(MainView view) {
         super(view);
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        names = new ArrayList<>();
+        createSortSelection();
+
+        panels = new ArrayList<>();
         contentPanel = new JPanel();
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
 
@@ -26,26 +29,55 @@ public class MazeLoadMenuPartialView extends PartialView implements ActionListen
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 //        add(scrollPane);
-
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
         add(scrollPane);
+    }
+
+    private void createSortSelection(){
+        JPanel container = new JPanel(new FlowLayout(FlowLayout.LEADING, 5, 0));
+        container.setMinimumSize(new Dimension(300, 25));
+        container.setPreferredSize(new Dimension(300, 25));
+        container.setMaximumSize(new Dimension(300, 25));
+        JLabel label = new JLabel("Sort Mazes By: ");
+        container.add(label);
+        sortComboBox = new JComboBox<>(new String[] {
+                "Name",
+                "Author",
+                "Created Time",
+                "Modified Time",
+        });
+        sortComboBox.addActionListener(this);
+        container.add(sortComboBox);
+        reverseCheckBox = new JCheckBox("Reversed");
+        reverseCheckBox.addActionListener(this);
+        container.add(reverseCheckBox);
+        add(container);
     }
 
     public void reloadMazes(){
         contentPanel.setVisible(false);
-        this.names.forEach(label -> {
+        panels.forEach(label -> {
             contentPanel.remove(label);
             label.setVisible(false);
         });
-        this.names.removeAll(this.names);
+        panels.removeAll(panels);
         contentPanel.revalidate();
         contentPanel.repaint();
 
         MazeDataSource dataSource = new MazeDataSource();
-        Set<String> names = dataSource.getNames();
-        names.forEach(n -> {
-            this.names.add(new MazeLoadPanel(n, this));
+        Set<MazeDataModel> mazeDataModels = dataSource.getMazes();
+
+        Comparator<MazeDataModel> comparator = (o1, o2) -> (reverseCheckBox.getModel().isSelected() ? -1 : 1) * switch (sortComboBox.getSelectedIndex()) {
+            default -> o1.name().compareTo(o2.name());
+            case 1 -> o1.author().compareTo(o2.author());
+            case 2 -> o1.createdTime().compareTo(o2.modifiedTime());
+            case 3 -> o1.modifiedTime().compareTo(o2.modifiedTime());
+        };
+
+        mazeDataModels.stream().sorted(comparator).forEach(n -> {
+            panels.add(new MazeLoadPanel(n, this));
         });
-        this.names.forEach(label -> {
+        panels.forEach(label -> {
             contentPanel.add(label);
             label.setVisible(true);
         });
@@ -60,6 +92,6 @@ public class MazeLoadMenuPartialView extends PartialView implements ActionListen
 
     @Override
     public void actionPerformed(ActionEvent e) {
-
+        reloadMazes();
     }
 }

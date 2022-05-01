@@ -1,6 +1,8 @@
 package Models;
 
-public record MazeDataModel(int idx, String name, String author, String description, int algorithm, long seed, int rowsCount, int colsCount, MazeNodeDataModel mazeNodes) {
+import java.time.LocalDateTime;
+
+public record MazeDataModel(int idx, String name, String author, String description, LocalDateTime createdTime, LocalDateTime modifiedTime, int algorithm, long seed, int rowsCount, int colsCount, MazeNodeDataModel mazeNodes) {
     public Maze unpack(){
         Maze maze = new Maze(rowsCount, colsCount);
         maze.disconnectAll();

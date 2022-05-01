@@ -185,7 +185,7 @@ public class MazeCreationMenuPartialView extends PartialView implements ActionLi
                 String description = descriptionTextArea.getText();
 
                 Maze maze = view.getMaze();
-                MazeCreationController.addMaze(name, author, description, maze);
+                MazeCreationController.addOrEditMaze(name, author, description, maze);
                 view.reloadSavedMazes();
             }
         }

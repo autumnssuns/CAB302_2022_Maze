@@ -1,16 +1,17 @@
 package DatabaseConnection;
 
 import Models.MazeDataModel;
-import Models.MazeNode;
 import Models.MazeNodeDataModel;
+import Utils.Formatter;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -21,6 +22,8 @@ public class MazeDataSource {
                     + "name VARCHAR(30),"
                     + "author VARCHAR(30),"
                     + "description VARCHAR(20),"
+                    + "createdTime TEXT,"
+                    + "modifiedTime TEXT,"
                     + "algorithm INTEGER,"
                     + "seed INTEGER,"
                     + "rowsCount INTEGER,"
@@ -36,9 +39,13 @@ public class MazeDataSource {
                     + "FOREIGN KEY(mazeIdx) REFERENCES mazes(idx)"
                     + ");";
 
-    private static final String INSERT_MAZE = "INSERT INTO mazes (name, author, description, algorithm, seed, rowsCount, colsCount) VALUES (?, ?, ?, ?, ?, ?, ?);";
+    private static final String INSERT_MAZE = "INSERT INTO mazes (name, author, description, createdTime, modifiedTime, algorithm, seed, rowsCount, colsCount) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
+
+    private static final String EDIT_MAZE = "UPDATE mazes SET author = ?, description = ?, modifiedTime = ? WHERE idx = ?;";
 
     private static final String INSERT_NODE = "INSERT INTO mazeNodes (mazeIdx, idx, neighbours) VALUES (?, ?, ?);";
+
+    private static final String GET_MAZES = "SELECT * FROM mazes;";
 
     private static final String GET_NAMES = "SELECT name FROM mazes;";
 
@@ -52,7 +59,7 @@ public class MazeDataSource {
 
     private Connection connection;
 
-    private PreparedStatement addMaze, addNode, getNames, getMaze, getMazeNodes, editMaze, deleteMaze, deleteNodeByMazeIdx;
+    private PreparedStatement addMaze, addNode, getMazes, getNames, getMaze, getMazeNodes, editMaze, deleteMaze, deleteNodeByMazeIdx;
 
     public MazeDataSource(){
         connection = DBConnection.getInstance();
@@ -62,7 +69,9 @@ public class MazeDataSource {
             st.execute(CREATE_MAZE_NODES_TABLE);
 
             addMaze = connection.prepareStatement(INSERT_MAZE);
+            editMaze = connection.prepareStatement(EDIT_MAZE);
             addNode = connection.prepareStatement(INSERT_NODE);
+            getMazes = connection.prepareStatement(GET_MAZES);
             getNames = connection.prepareStatement(GET_NAMES);
             getMaze = connection.prepareStatement(GET_MAZE);
             getMazeNodes = connection.prepareStatement(GET_MAZE_NODES);
@@ -78,10 +87,12 @@ public class MazeDataSource {
             addMaze.setString(1, maze.name());
             addMaze.setString(2, maze.author());
             addMaze.setString(3, maze.description());
-            addMaze.setInt(4, maze.algorithm());
-            addMaze.setLong(5, maze.seed());
-            addMaze.setInt(6, maze.rowsCount());
-            addMaze.setInt(7, maze.colsCount());
+            addMaze.setString(4, Utils.Formatter.formatDateTime(LocalDateTime.now()));
+            addMaze.setString(5, Utils.Formatter.formatDateTime(LocalDateTime.now()));
+            addMaze.setInt(6, maze.algorithm());
+            addMaze.setLong(7, maze.seed());
+            addMaze.setInt(8, maze.rowsCount());
+            addMaze.setInt(9, maze.colsCount());
             addMaze.executeUpdate();
 
             ResultSet generatedKeys = addMaze.getGeneratedKeys();
@@ -118,6 +129,8 @@ public class MazeDataSource {
             String mazeName = rs.getString("name");
             String mazeAuthor = rs.getString("author");
             String mazeDescription = rs.getString("description");
+            LocalDateTime createdTime = LocalDateTime.parse(rs.getString("createdTime"), Formatter.DATE_TIME_FORMATTER);
+            LocalDateTime modifiedTime = LocalDateTime.parse(rs.getString("modifiedTime"), Formatter.DATE_TIME_FORMATTER);
             int mazeAlgorithm = rs.getInt("algorithm");
             long mazeSeed = rs.getLong("seed");
             int mazeRowsCount = rs.getInt("rowsCount");
@@ -132,12 +145,37 @@ public class MazeDataSource {
                 String value = rs.getString("neighbours");
                 neighbours.put(key, value);
             }
-            return new MazeDataModel(mazeIdx, mazeName, mazeAuthor, mazeDescription, mazeAlgorithm, mazeSeed, mazeRowsCount, mazeColsCount, new MazeNodeDataModel(neighbours));
+            return new MazeDataModel(mazeIdx, mazeName, mazeAuthor, mazeDescription, createdTime, modifiedTime, mazeAlgorithm, mazeSeed, mazeRowsCount, mazeColsCount, new MazeNodeDataModel(neighbours));
         }
         catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public Set<MazeDataModel> getMazes(){
+        Set<MazeDataModel> mazes = new HashSet<>();
+        try {
+            ResultSet rs = getMazes.executeQuery();
+            while(rs.next()){
+                int mazeIdx = rs.getInt("idx");
+                String mazeName = rs.getString("name");
+                String mazeAuthor = rs.getString("author");
+                String mazeDescription = rs.getString("description");
+                LocalDateTime createdTime = LocalDateTime.parse(rs.getString("createdTime"), Formatter.DATE_TIME_FORMATTER);
+                LocalDateTime modifiedTime = LocalDateTime.parse(rs.getString("modifiedTime"), Formatter.DATE_TIME_FORMATTER);
+                int mazeAlgorithm = rs.getInt("algorithm");
+                long mazeSeed = rs.getLong("seed");
+                int mazeRowsCount = rs.getInt("rowsCount");
+                int mazeColsCount = rs.getInt("colsCount");
+
+                MazeDataModel model = new MazeDataModel(mazeIdx, mazeName, mazeAuthor, mazeDescription, createdTime, modifiedTime, mazeAlgorithm, mazeSeed, mazeRowsCount, mazeColsCount, null);;
+                mazes.add(model);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return mazes;
     }
 
     public Set<String> getNames(){
@@ -153,8 +191,40 @@ public class MazeDataSource {
         return names;
     }
 
-    public void editMaze(MazeDataModel model){
+    public void editMaze(MazeDataModel maze){
+        try {
+            PreparedStatement getMazeIndex = connection.prepareStatement("SELECT idx FROM mazes WHERE name=?;");
+            getMazeIndex.setString(1, maze.name());
+            ResultSet rs = getMazeIndex.executeQuery();
+            if (rs.next()){
+                int mazeIdx = rs.getInt("idx");
 
+                deleteNodeByMazeIdx.setInt(1, mazeIdx);
+                deleteNodeByMazeIdx.executeUpdate();
+
+                maze.mazeNodes().neighbours().forEach((x, y) -> {
+                    try {
+                        addNode.setInt(1, mazeIdx);
+                        addNode.setInt(2, x);
+                        addNode.setString(3, y);
+                        addNode.addBatch();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                });
+                addNode.executeBatch();
+
+                editMaze.setString(1, maze.author());
+                editMaze.setString(2, maze.description());
+                editMaze.setString(3, Utils.Formatter.formatDateTime(maze.modifiedTime()));
+                editMaze.setInt(4, mazeIdx);
+                editMaze.executeUpdate();
+            } else {
+                addMaze(maze);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public void deleteMaze(String name){

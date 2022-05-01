@@ -1,7 +1,6 @@
 package Views;
 
 import DatabaseConnection.MazeDataSource;
-import Models.Maze;
 import Models.MazeDataModel;
 
 import javax.imageio.ImageIO;
@@ -13,9 +12,10 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 
 public class MazeLoadPanel extends JPanel implements ActionListener {
-    private String mazeName, authorName;
+    private MazeDataModel model;
     private JButton deleteButton, loadButton;
     private JPanel namePanel, datesPanel, previewPanel;
     private JLabel nameLabel, authorLabel, creationDateLabel, modifiedDateLabel;
@@ -24,7 +24,7 @@ public class MazeLoadPanel extends JPanel implements ActionListener {
     private int IMAGE_SIZE = 90;
     private MazeDataSource dataSource;
 
-    public MazeLoadPanel(String name, MazeLoadMenuPartialView container){
+    public MazeLoadPanel(MazeDataModel model, MazeLoadMenuPartialView container){
         dataSource = new MazeDataSource();
 
         this.container = container;
@@ -34,7 +34,7 @@ public class MazeLoadPanel extends JPanel implements ActionListener {
         this.setMaximumSize(new Dimension(300, 150));
         this.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        mazeName = name;
+        this.model = model;
         createNamePanel();
         createDatesPanel();
         createDescriptionTextArea();
@@ -70,10 +70,10 @@ public class MazeLoadPanel extends JPanel implements ActionListener {
         namePanel = new JPanel();
         namePanel.setLayout(new BoxLayout(namePanel, BoxLayout.X_AXIS));
 
-        nameLabel = new JLabel(mazeName, SwingConstants.LEFT);
+        nameLabel = new JLabel(model.name(), SwingConstants.LEFT);
         nameLabel.setFont(nameLabel.getFont().deriveFont(Font.BOLD, 14f));
 
-        authorLabel = new JLabel("By <author>", SwingConstants.LEFT);
+        authorLabel = new JLabel(String.format("By %s", model.author()), SwingConstants.LEFT);
         authorLabel.setFont(authorLabel.getFont().deriveFont(Font.ITALIC, 10f));
         authorLabel.setBorder(new EmptyBorder(0, 10, 0, 0));
 
@@ -103,32 +103,34 @@ public class MazeLoadPanel extends JPanel implements ActionListener {
         GridLayout gridLayout = new GridLayout(1, 2);
         datesPanel.setLayout(gridLayout);
 
-        creationDateLabel = new JLabel("Created: dd/mm/yyyy hh:mm", SwingConstants.LEFT);
-        creationDateLabel.setFont(creationDateLabel.getFont().deriveFont(Font.ITALIC, 8f));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyy hh:mm");
 
-        modifiedDateLabel = new JLabel("Modified: dd/mm/yyyy hh:mm", SwingConstants.RIGHT);
-        modifiedDateLabel.setFont(modifiedDateLabel.getFont().deriveFont(Font.ITALIC, 8f));
+        creationDateLabel = new JLabel(String.format("Created: %s", model.createdTime().format(formatter)), SwingConstants.LEFT);
+        creationDateLabel.setFont(creationDateLabel.getFont().deriveFont(Font.ITALIC, 10f));
+
+        modifiedDateLabel = new JLabel(String.format("Modified: %s", model.modifiedTime().format(formatter)), SwingConstants.RIGHT);
+        modifiedDateLabel.setFont(modifiedDateLabel.getFont().deriveFont(Font.ITALIC, 10f));
 
         datesPanel.add(creationDateLabel, GroupLayout.Alignment.LEADING);
         datesPanel.add(modifiedDateLabel, GroupLayout.Alignment.TRAILING);
     }
 
     private void createDescriptionTextArea(){
-        descriptionTextArea = new JTextArea("Author's description");
+        descriptionTextArea = new JTextArea(model.description());
         descriptionTextArea.setEditable(false);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == deleteButton){
-            dataSource.deleteMaze(this.mazeName);
+            dataSource.deleteMaze(model.name());
             container.reloadMazes();
         }
 
         if (e.getSource() == loadButton){
-            MazeDataModel mazeModel = dataSource.getMaze(mazeName);
+            MazeDataModel mazeModel = dataSource.getMaze(model.name());
             container.loadMaze(mazeModel);
-            System.out.println("Loading maze " + mazeName);
+            System.out.println("Loading maze " + model.name());
         }
     }
 }

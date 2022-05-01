@@ -6,13 +6,14 @@ import Models.MazeDataModel;
 import Models.MazeNode;
 import Models.MazeNodeDataModel;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class MazeCreationController {
-    public static void addMaze(String name, String author, String description, Maze maze){
+    public static void addOrEditMaze(String name, String author, String description, Maze maze){
         int idx = -1;
         int rowsCount = maze.getSize(0);
         int colsCount = maze.getSize(1);
@@ -30,9 +31,9 @@ public class MazeCreationController {
             neighbours.put(i, neighboursStr);
         }
 
-        MazeDataModel model = new MazeDataModel(idx, name, author, description, maze.getGeneratorType(), maze.getSeed(), rowsCount, colsCount, new MazeNodeDataModel(neighbours));
+        MazeDataModel model = new MazeDataModel(idx, name, author, description, LocalDateTime.now(), LocalDateTime.now(), maze.getGeneratorType(), maze.getSeed(), rowsCount, colsCount, new MazeNodeDataModel(neighbours));
 
         MazeDataSource dataSource = new MazeDataSource();
-        dataSource.addMaze(model);
+        dataSource.editMaze(model);
     }
 }
