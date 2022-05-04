@@ -10,6 +10,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.Random;
 
 public class MazeCreationMenuPartialView extends PartialView implements ActionListener {
@@ -171,6 +172,25 @@ public class MazeCreationMenuPartialView extends PartialView implements ActionLi
         exportButton.setEnabled(false);
     }
 
+    private void exportMaze(){
+        JFileChooser chooser = new JFileChooser();
+        chooser.setCurrentDirectory(new File("."));
+        chooser.setDialogTitle("Choose a folder");
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        chooser.setAcceptAllFileFilterUsed(false);
+        if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+            System.out.println("getCurrentDirectory(): "
+                    +  chooser.getCurrentDirectory());
+            System.out.println("getSelectedFile() : "
+                    +  chooser.getSelectedFile());
+        }
+        else {
+            System.out.println("No Selection ");
+        }
+        String path = chooser.getCurrentDirectory().getPath() + "\\" + mazeNameTextField.getText();
+        view.saveMazeAsImage(path);
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         JButton sourceButton = (JButton) e.getSource();
@@ -194,7 +214,7 @@ public class MazeCreationMenuPartialView extends PartialView implements ActionLi
                 view.reloadSavedMazes();
             }
             case "Export" -> {
-                view.saveMazeAsImage(mazeNameTextField.getText());
+                exportMaze();
             }
         }
     }
