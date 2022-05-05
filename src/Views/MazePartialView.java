@@ -242,8 +242,11 @@ public class MazePartialView extends PartialView implements ActionListener {
         paint(g2);
         g2.dispose();
 
-        int newWidth = cols * 16;
-        int newHeight = rows * 16;
+        int maxDim = Math.max(cols,rows);
+        int cellSize = (int) Math.ceil(((16 - 64)/(100f - 6))*(maxDim - 6) + 64);
+
+        int newWidth = cols * cellSize;
+        int newHeight = rows * cellSize;
 
         Image tmp = image.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
         BufferedImage newImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);
