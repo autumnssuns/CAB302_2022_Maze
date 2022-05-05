@@ -262,10 +262,6 @@ public class MazePartialView extends PartialView implements ActionListener {
             }
             Desktop desktop = Desktop.getDesktop();
             if(imageFile.exists()) desktop.open(imageFile);
-
-            //let's try to open PDF file
-            imageFile = new File("/Users/pankaj/java.pdf");
-            if(imageFile.exists()) desktop.open(imageFile);
         } catch (IOException e) {
             e.printStackTrace();
         }
