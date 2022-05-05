@@ -187,7 +187,7 @@ public class MazeCreationMenuPartialView extends PartialView implements ActionLi
         else {
             System.out.println("No Selection ");
         }
-        String path = chooser.getCurrentDirectory().getPath() + "\\" + mazeNameTextField.getText();
+        String path = chooser.getSelectedFile().getPath() + "\\" + mazeNameTextField.getText();
         view.saveMazeAsImage(path);
     }
 

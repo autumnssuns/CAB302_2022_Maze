@@ -254,7 +254,18 @@ public class MazePartialView extends PartialView implements ActionListener {
         g2d.drawImage(tmp, 0, 0, null);
         g2d.dispose();
         try {
-            ImageIO.write(newImage, "png", new File(path + ".png"));
+            File imageFile = new File(path + ".png");
+            ImageIO.write(newImage, "png", imageFile);
+            if(!Desktop.isDesktopSupported()){
+                System.out.println("Desktop is not supported");
+                return;
+            }
+            Desktop desktop = Desktop.getDesktop();
+            if(imageFile.exists()) desktop.open(imageFile);
+
+            //let's try to open PDF file
+            imageFile = new File("/Users/pankaj/java.pdf");
+            if(imageFile.exists()) desktop.open(imageFile);
         } catch (IOException e) {
             e.printStackTrace();
         }
