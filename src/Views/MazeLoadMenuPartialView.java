@@ -2,11 +2,13 @@ package Views;
 
 import DatabaseConnection.MazeDataSource;
 import Models.MazeDataModel;
+import Utils.Graphics;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
 import java.util.*;
 
 public class MazeLoadMenuPartialView extends PartialView implements ActionListener {
@@ -88,6 +90,7 @@ public class MazeLoadMenuPartialView extends PartialView implements ActionListen
 
     public void loadMaze(MazeDataModel mazeModel){
         view.loadMaze(mazeModel);
+        panels.forEach(p -> p.setDefaultColor(Graphics.COLOR.LOAD_PANE_DEFAULT.getColor()));
     }
 
     @Override

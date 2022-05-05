@@ -2,6 +2,7 @@ package Views;
 
 import DatabaseConnection.MazeDataSource;
 import Models.MazeDataModel;
+import Utils.Graphics;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -9,24 +10,37 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 
-public class MazeLoadPanel extends JPanel implements ActionListener {
-    private MazeDataModel model;
+public class MazeLoadPanel extends JPanel implements ActionListener, MouseListener {
+    private final MazeDataModel model;
     private JButton deleteButton, loadButton;
-    private JPanel namePanel, datesPanel, previewPanel;
+    private TransparentPanel namePanel, datesPanel, previewPanel;
     private JLabel nameLabel, authorLabel, creationDateLabel, modifiedDateLabel;
     private JTextArea descriptionTextArea;
-    private MazeLoadMenuPartialView container;
-    private int IMAGE_SIZE = 90;
-    private MazeDataSource dataSource;
+    private final MazeLoadMenuPartialView container;
+    private final int IMAGE_SIZE = 90;
+    private final MazeDataSource dataSource;
+    private Color defaultColor;
+
+    public void setDefaultColor(Color defaultColor) {
+        this.defaultColor = defaultColor;
+        setBackground(defaultColor);
+    }
 
     public MazeLoadPanel(MazeDataModel model, MazeLoadMenuPartialView container){
         dataSource = new MazeDataSource();
 
+        defaultColor = Graphics.COLOR.LOAD_PANE_DEFAULT.getColor();
+        setBackground(defaultColor);
+
+        this.addMouseListener(this);
         this.container = container;
         this.setLayout(new BorderLayout());
         this.setMinimumSize(new Dimension(300, 150));
@@ -47,7 +61,7 @@ public class MazeLoadPanel extends JPanel implements ActionListener {
     }
 
     private void createPreviewHolder() {
-        previewPanel = new JPanel(new FlowLayout());
+        previewPanel = new TransparentPanel(new FlowLayout());
         Image myPicture = model.icon().getImage();
         //            myPicture = ImageIO.read(new File("assets/100_100_Maze_BW.png"));
         // https://www.baeldung.com/java-resize-image
@@ -60,11 +74,12 @@ public class MazeLoadPanel extends JPanel implements ActionListener {
         loadButton = new JButton(new ImageIcon(resizedImage));
         loadButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
         loadButton.addActionListener(this);
+        loadButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         previewPanel.add(loadButton);
     }
 
     private void createNamePanel(){
-        namePanel = new JPanel();
+        namePanel = new TransparentPanel();
         namePanel.setLayout(new BoxLayout(namePanel, BoxLayout.X_AXIS));
 
         nameLabel = new JLabel(model.name(), SwingConstants.LEFT);
@@ -74,13 +89,14 @@ public class MazeLoadPanel extends JPanel implements ActionListener {
         authorLabel.setFont(authorLabel.getFont().deriveFont(Font.ITALIC, 10f));
         authorLabel.setBorder(new EmptyBorder(0, 10, 0, 0));
 
-        JPanel deletePanel = new JPanel(new GridBagLayout());
+        TransparentPanel deletePanel = new TransparentPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.NONE;
         c.anchor = GridBagConstraints.FIRST_LINE_END;
         c.weightx = 1;
 
         deleteButton = new JButton("X");
+        deleteButton.addMouseListener(this);
         deleteButton.setMargin(new Insets(0,0,0,0));
         deleteButton.setPreferredSize(new Dimension(20,20));
 //        deleteButton.setMaximumSize(new Dimension(10,10));
@@ -96,7 +112,8 @@ public class MazeLoadPanel extends JPanel implements ActionListener {
     }
 
     private void createDatesPanel(){
-        datesPanel = new JPanel();
+        datesPanel = new TransparentPanel();
+        datesPanel.setOpaque(false);
         GridLayout gridLayout = new GridLayout(1, 2);
         datesPanel.setLayout(gridLayout);
 
@@ -114,6 +131,7 @@ public class MazeLoadPanel extends JPanel implements ActionListener {
 
     private void createDescriptionTextArea(){
         descriptionTextArea = new JTextArea(model.description());
+        descriptionTextArea.addMouseListener(this);
         descriptionTextArea.setEditable(false);
     }
 
@@ -127,7 +145,45 @@ public class MazeLoadPanel extends JPanel implements ActionListener {
         if (e.getSource() == loadButton){
             MazeDataModel mazeModel = dataSource.getMaze(model.name());
             container.loadMaze(mazeModel);
-            System.out.println("Loading maze " + model.name());
+            setDefaultColor(Graphics.COLOR.LOAD_PANE_LOADED.getColor());
         }
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+//        this.getGraphics().clearRect(this.getX(), this.getY(), this.getWidth(), this.getHeight());
+        if (e.getSource() == deleteButton){
+            setBackground(Graphics.COLOR.LOAD_PANE_DELETE.getColor());
+        }
+        if (e.getSource() == this){
+            setBackground(Graphics.COLOR.LOAD_PANE_HOVER.getColor());
+        }
+        validate();
+        repaint();
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+//        this.getGraphics().clearRect(this.getX(), this.getY(), this.getWidth(), this.getHeight());
+        setBackground(defaultColor);
+        validate();
+        repaint();
     }
 }

@@ -204,8 +204,8 @@ public class MainView extends JFrame implements KeyListener, Runnable {
         mazeLoadMenuPartialView.reloadMazes();
     }
 
-    public void saveMazeAsImage(String name){
-        mazePartialView.saveImage(name);
+    public void saveMazeAsImage(String path){
+        mazePartialView.saveImage(path);
     }
 
     public ImageIcon getMazeIcon() {

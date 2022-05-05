@@ -236,7 +236,7 @@ public class MazePartialView extends PartialView implements ActionListener {
         showSolution(g2);
     }
 
-    public void saveImage(String name){
+    public void saveImage(String path){
         BufferedImage image = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
         Graphics2D g2 = image.createGraphics();
         paint(g2);
@@ -251,7 +251,7 @@ public class MazePartialView extends PartialView implements ActionListener {
         g2d.drawImage(tmp, 0, 0, null);
         g2d.dispose();
         try {
-            ImageIO.write(newImage, "png", new File(name + ".png"));
+            ImageIO.write(newImage, "png", new File(path + ".png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -312,23 +312,10 @@ public class MazePartialView extends PartialView implements ActionListener {
         repaint();
         view.requestFocus();
     }
-//
-//    public void shift(int x, int y) {
-//        for (JButton button : vButtons){
-//            button.setLocation(button.getX() + x, button.getY() + y);
-//        }
-//        for (JButton button : hButtons){
-//            button.setLocation(button.getX() + x, button.getY() + y);
-//        }
-//    }
 
     public void toggleGrid(boolean state){
         vButtons.forEach(x -> x.setBorderPainted(state));
         hButtons.forEach(x -> x.setBorderPainted(state));
-    }
-
-    public void export(String path){
-        // TODO: Export as images
     }
 
     public Maze getMaze() {
