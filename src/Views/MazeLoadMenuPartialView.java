@@ -26,6 +26,7 @@ public class MazeLoadMenuPartialView extends PartialView implements ActionListen
         panels = new ArrayList<>();
         contentPanel = new JPanel();
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+        contentPanel.setBackground(Graphics.COLOR.LOAD_PANE_DEFAULT.getColor());
 
         scrollPane = new JScrollPane(contentPanel);
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);

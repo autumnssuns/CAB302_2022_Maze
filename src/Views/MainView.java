@@ -18,11 +18,12 @@ public class MainView extends JFrame implements KeyListener, Runnable {
     private JPanel menuContainer;
     private JPanel editorContainer;
     private JPanel mazePartialViewContainer;
-    private JPanel loadContainer;
+    private JTabbedPane loadContainer;
 
     private boolean showingAnimation;
     private boolean showingGrid;
     private boolean showingSolution;
+    private AssetMenuPartialView assetMenuPartialView;
 
     public boolean isShowingGrid() {
         return showingGrid;
@@ -54,7 +55,7 @@ public class MainView extends JFrame implements KeyListener, Runnable {
         getContentPane().setLayout(new BorderLayout());
         menuContainer = new JPanel(new BorderLayout());
 
-        loadContainer = new JPanel(new BorderLayout());
+        loadContainer = new JTabbedPane();
 
         editorContainer = new JPanel();
         editorContainer.setLayout(new BoxLayout(editorContainer, BoxLayout.X_AXIS));
@@ -84,8 +85,12 @@ public class MainView extends JFrame implements KeyListener, Runnable {
         addLabel(); // PAGE START
         addMenu();  // LINE START
         mazeLoadMenuPartialView = new MazeLoadMenuPartialView(this);
+        assetMenuPartialView = new AssetMenuPartialView(this);
 
-        loadContainer.add(mazeLoadMenuPartialView);
+        loadContainer.addTab("Mazes", mazeLoadMenuPartialView);
+        loadContainer.setMnemonicAt(0, KeyEvent.VK_1);
+        loadContainer.addTab("Images", assetMenuPartialView);
+        loadContainer.setMnemonicAt(1, KeyEvent.VK_2);
 
         getContentPane().add(new JPanel(), BorderLayout.PAGE_END);
         getContentPane().add(new JPanel(), BorderLayout.LINE_END);
