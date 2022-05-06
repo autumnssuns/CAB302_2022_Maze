@@ -38,9 +38,9 @@ public class MazeLoadMenuPartialView extends PartialView implements ActionListen
 
     private void createSortSelection(){
         JPanel container = new JPanel(new FlowLayout(FlowLayout.LEADING, 5, 0));
-        container.setMinimumSize(new Dimension(300, 25));
-        container.setPreferredSize(new Dimension(300, 25));
-        container.setMaximumSize(new Dimension(300, 25));
+//        container.setMinimumSize(new Dimension(300, 25));
+//        container.setPreferredSize(new Dimension(300, 25));
+        container.setMaximumSize(new Dimension(Integer.MAX_VALUE, 25));
         JLabel label = new JLabel("Sort Mazes By: ");
         container.add(label);
         sortComboBox = new JComboBox<>(new String[] {
