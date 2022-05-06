@@ -12,7 +12,7 @@ public class AssetMenuPartialView extends PartialView implements ActionListener 
     private ArrayList<JPanel> boxPanels;
     private JComboBox sortComboBox;
     private JScrollPane scrollPane;
-    private JPanel contentPanel;
+    private StaticGridPanel contentPanel;
     private JCheckBox reverseCheckBox;
 
     public AssetMenuPartialView(MainView view) {
@@ -21,7 +21,7 @@ public class AssetMenuPartialView extends PartialView implements ActionListener 
         panels = new ArrayList<>();
 
         createAssetManagementPanel();
-        contentPanel = new JPanel();
+        contentPanel = new StaticGridPanel(2, StaticGridPanel.VERTICAL);
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
 
         scrollPane = new JScrollPane(contentPanel);
@@ -61,6 +61,10 @@ public class AssetMenuPartialView extends PartialView implements ActionListener 
 
     public void reloadAssets(){
         contentPanel.setVisible(false);
+        contentPanel.removeAll();
+        contentPanel.revalidate();
+        contentPanel.repaint();
+
         panels.forEach(label -> {
             contentPanel.add(label);
             label.setVisible(true);
