@@ -9,41 +9,63 @@ public class StaticGridPanel extends JPanel {
     public static final int VERTICAL = 1;
 
     private int numPerBox;
-    private int count;
     private ArrayList<JPanel> boxes;
+    private ArrayList<Component> components;
     private int direction;
 
     public StaticGridPanel(int numPerBox, int direction){
         this.setLayout(new BoxLayout(this, direction));
         boxes = new ArrayList<>();
+        components = new ArrayList<>();
         this.numPerBox = numPerBox;
         this.direction = direction;
-        count = 0;
         setVisible(true);
     }
 
     @Override
     public Component add(Component comp) {
-        int boxIndex = count / numPerBox;
+        int boxIndex = components.size() / numPerBox;
         while (boxes.size() <= boxIndex){
             addBox();
         }
-        count++;
+        components.add(comp);
         return boxes.get(boxIndex).add(comp);
+    }
+
+    public void reload(){
+        for (int compIndex = 0; compIndex < components.size(); compIndex++){
+            int boxIndex = compIndex / numPerBox;
+            while (boxes.size() <= boxIndex){
+                addBox();
+            }
+            boxes.get(boxIndex).add(components.get(compIndex));
+        }
+    }
+
+    public void setCountPerBox(int numPerBox){
+        this.numPerBox = numPerBox;
+        reload();
     }
 
     @Override
     public void removeAll(){
         super.removeAll();
         boxes.removeAll(boxes);
-        count = 0;
+        components.removeAll(components);
+    }
+
+    @Override
+    public void remove(Component c){
+        super.remove(c);
+        components.remove(c);
+        reload();
     }
 
     private void addBox(){
         JPanel box = new JPanel();
         box.setLayout(new BoxLayout(box, direction == HORIZONTAL ? BoxLayout.Y_AXIS : BoxLayout.X_AXIS));
         boxes.add(box);
-        super.add(box, 0);
+        super.add(box);
         box.setVisible(true);
     }
 }
