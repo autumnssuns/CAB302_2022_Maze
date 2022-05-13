@@ -1,20 +1,20 @@
 package Views;
 
+import DatabaseConnection.AssetsDataSource;
 import Generators.GeneratorFactory;
 import Models.*;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.Timer;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.nio.Buffer;
-import java.util.ArrayList;
+import java.util.*;
+import java.util.List;
 import java.util.stream.IntStream;
 
 public class MazePartialView extends PartialView implements ActionListener {
@@ -27,6 +27,9 @@ public class MazePartialView extends PartialView implements ActionListener {
     private int rows, cols;
     private Maze maze;
     private MazeNode current;
+    private ArrayList<JLabel> images;
+    private int size, weight;
+//    private ArrayList<Map.Entry<AssetDataModel, ArrayList<Integer>>> images;
 
     public MazePartialView (MainView container, Maze maze){
         super(container);
@@ -41,6 +44,7 @@ public class MazePartialView extends PartialView implements ActionListener {
         nodeButtons = new ArrayList<>();
         hButtons = new ArrayList<>();
         vButtons = new ArrayList<>();
+        images = new ArrayList<>();
         current = maze.getRoot();
     }
 
@@ -74,8 +78,8 @@ public class MazePartialView extends PartialView implements ActionListener {
         //        int size = (int) Math.floor(Math.min((675 + 1.2 * rows) / rows, (675 + 1.2 * cols) / cols));
         float sig = Math.max(rows, cols);
         float numerator = sig > 2 ? 675 : sig == 2 ? 650 : 600;
-        int size = (int) Math.ceil(numerator / sig) + 1;
-        int weight = (int) Math.ceil(0.2 * size);
+        size = (int) Math.ceil(numerator / sig) + 1;
+        weight = (int) Math.ceil(0.2 * size);
         Dimension horizontalSize = new Dimension(size + weight, weight);
         Dimension verticalSize = new Dimension(weight, size + weight);
         setLayout(null);
@@ -203,7 +207,7 @@ public class MazePartialView extends PartialView implements ActionListener {
         });
     }
 
-    public void showSolution(Graphics2D g){
+    private void showSolution(Graphics2D g){
         ArrayList<MazeNode> solution = maze.getSolution(current, maze.getDestination());
         maze.getRoot().getAttachedButton().setText("R");
         maze.getDestination().getAttachedButton().setText("D");
@@ -229,11 +233,69 @@ public class MazePartialView extends PartialView implements ActionListener {
         }
     }
 
+    public void addImage(AssetDataModel assetDataModel){
+//        AbstractMap.SimpleEntry<AssetDataModel, ArrayList<Integer>> entry = new AbstractMap.SimpleEntry<>(assetDataModel, new ArrayList<>(List.of(new Integer[]{0, 0})));
+//        images.add(entry);
+        int imageSize = 2 * size - weight;
+        ImageIcon icon = assetDataModel.icon();
+        BufferedImage resizedImage = new BufferedImage(imageSize, imageSize, BufferedImage.TYPE_INT_RGB);
+        Graphics2D graphics2D = resizedImage.createGraphics();
+        graphics2D.drawImage(icon.getImage(), 0, 0, imageSize, imageSize, null);
+        graphics2D.dispose();
+        ImageIcon resizedIcon = new ImageIcon(resizedImage);
+
+        JLabel label = new JLabel(resizedIcon);
+        label.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        label.setSize(label.getPreferredSize());
+        label.setLocation(weight, weight);
+        ImageMouseHandler imageMouseHandler = new ImageMouseHandler();
+        label.addMouseListener(imageMouseHandler);
+        label.addMouseMotionListener(imageMouseHandler);
+        add(label, 0);
+        images.add(label);
+        repaint();
+    }
+
+    // https://stackoverflow.com/questions/27915214/how-can-i-drag-images-with-the-mouse-cursor-in-java-gui
+    private class ImageMouseHandler extends MouseAdapter{
+        private Point offset;
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            JLabel label = (JLabel) e.getComponent();
+            moveToFront(label);
+            offset = e.getPoint();
+        }
+
+        @Override
+        public void mouseDragged(MouseEvent e) {
+            int x = e.getPoint().x - offset.x;
+            x -= x % size;
+            int y = e.getPoint().y - offset.y;
+            y -= y % size;
+            Component component = e.getComponent();
+            Point location = component.getLocation();
+            location.x += x;
+            location.y += y;
+            component.setLocation(location);
+        }
+    }
+//    private void showImages(Graphics2D g){
+//        images.forEach(entry -> {
+//            AssetDataModel model = entry.getKey();
+//            ArrayList<Integer> coords = entry.getValue();
+//            ImageIcon image = model.icon();
+//            g.drawImage(image.getImage(), coords.get(0), coords.get(1), this);
+//        });
+//    }
+
     @Override
     public void paint(Graphics g){
         super.paint(g);
         Graphics2D g2 = (Graphics2D) g;
         showSolution(g2);
+//        showImages(g2);
+//        images.forEach(im -> im.grabFocus());
     }
 
     public void saveImage(String path){

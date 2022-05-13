@@ -136,6 +136,10 @@ public class AssetMenuPartialView extends PartialView implements ActionListener 
         return null;
     }
 
+    public void addAsset(AssetDataModel assetDataModel){
+        view.addImage(assetDataModel);
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == addAssetButton){

@@ -1,5 +1,6 @@
 package Views;
 
+import Models.AssetDataModel;
 import Models.Maze;
 import Models.MazeDataModel;
 
@@ -215,5 +216,9 @@ public class MainView extends JFrame implements KeyListener, Runnable {
 
     public ImageIcon getMazeIcon() {
         return mazePartialView.getIcon();
+    }
+
+    public void addImage(AssetDataModel assetDataModel){
+        mazePartialView.addImage(assetDataModel);
     }
 }

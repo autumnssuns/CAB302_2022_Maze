@@ -103,5 +103,8 @@ public class AssetLoadPanel extends JPanel implements ActionListener {
             dataSource.deleteAsset(model.index());
             container.reloadAssets();
         }
+        if (e.getSource() == loadButton){
+            container.addAsset(model);
+        }
     }
 }
