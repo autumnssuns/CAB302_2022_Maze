@@ -1,6 +1,5 @@
 package Views;
 
-import DatabaseConnection.AssetsDataSource;
 import Generators.GeneratorFactory;
 import Models.*;
 
@@ -14,11 +13,9 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import java.util.List;
 import java.util.stream.IntStream;
 
 public class MazePartialView extends PartialView implements ActionListener {
-
     private ArrayList<BorderButton> vButtons = new ArrayList<>();
     private ArrayList<BorderButton> hButtons = new ArrayList<>();
     private ArrayList<NodeButton> nodeButtons;
@@ -27,9 +24,11 @@ public class MazePartialView extends PartialView implements ActionListener {
     private int rows, cols;
     private Maze maze;
     private MazeNode current;
-    private ArrayList<JLabel> images;
+    private ArrayList<MazeImageContainer> images;
     private int size, weight;
 //    private ArrayList<Map.Entry<AssetDataModel, ArrayList<Integer>>> images;
+
+    private JPanel contentPanel;
 
     public MazePartialView (MainView container, Maze maze){
         super(container);
@@ -45,6 +44,15 @@ public class MazePartialView extends PartialView implements ActionListener {
         hButtons = new ArrayList<>();
         vButtons = new ArrayList<>();
         images = new ArrayList<>();
+        // Pseudo "paint listener" to ensure the solution is always on top
+        contentPanel = new JPanel(null) {
+            @Override
+            public void paint(Graphics g){
+                super.paint(g);
+                showSolution((Graphics2D) g);
+            }
+        };
+        this.add(contentPanel, DEFAULT_LAYER);
         current = maze.getRoot();
     }
 
@@ -57,6 +65,7 @@ public class MazePartialView extends PartialView implements ActionListener {
         if (!maze.isLocked()) generate();
         else nodeButtons.forEach(NodeButton::repaintWalls);
         current.getAttachedButton().setBackground(Color.RED);
+        contentPanel.setSize(this.getSize());
         setVisible(true);
     }
 
@@ -98,7 +107,7 @@ public class MazePartialView extends PartialView implements ActionListener {
 //                buttonVertical.setText(String.valueOf(vButtons.size()));
                 if (i == 0 || i == cols) buttonVertical.setToggleable(false);
                 vButtons.add(buttonVertical);
-                add(buttonVertical);
+                contentPanel.add(buttonVertical, JLayeredPane.DEFAULT_LAYER);
             }
         }
 
@@ -113,7 +122,7 @@ public class MazePartialView extends PartialView implements ActionListener {
 //                buttonHorizontal.setText(String.valueOf(hButtons.size()));
                 if (j == 0 || j == rows) buttonHorizontal.setToggleable(false);
                 hButtons.add(buttonHorizontal);
-                add(buttonHorizontal);
+                contentPanel.add(buttonHorizontal, DEFAULT_LAYER);
             }
         }
         for (int i = 0; i < rows; i++){
@@ -124,7 +133,7 @@ public class MazePartialView extends PartialView implements ActionListener {
                 nodeButton.setBackground(Color.WHITE);
 //                nodeButton.setText(String.format("LR: %d%d TB:%d%d",i + j * rows, i + (1 + j) * rows, i + j * rows + j, i + 1 + j * rows + j));
 //                nodeButton.setText(String.format("L:%d R:%d T:%d B:", i + j * cols, i + (j + 1) * cols, i + j * cols, i + (j + 1) * cols));
-                add(nodeButton);
+                contentPanel.add(nodeButton, DEFAULT_LAYER);
 
                 BorderButton leftButton = vButtons.get(i + j * rows);
 //                leftButton.setState(new Random().nextBoolean());
@@ -236,50 +245,51 @@ public class MazePartialView extends PartialView implements ActionListener {
     public void addImage(AssetDataModel assetDataModel){
 //        AbstractMap.SimpleEntry<AssetDataModel, ArrayList<Integer>> entry = new AbstractMap.SimpleEntry<>(assetDataModel, new ArrayList<>(List.of(new Integer[]{0, 0})));
 //        images.add(entry);
-        int imageSize = 2 * size - weight;
-        ImageIcon icon = assetDataModel.icon();
-        BufferedImage resizedImage = new BufferedImage(imageSize, imageSize, BufferedImage.TYPE_INT_RGB);
-        Graphics2D graphics2D = resizedImage.createGraphics();
-        graphics2D.drawImage(icon.getImage(), 0, 0, imageSize, imageSize, null);
-        graphics2D.dispose();
-        ImageIcon resizedIcon = new ImageIcon(resizedImage);
+        MazeImageContainer image = new MazeImageContainer(assetDataModel, size, weight, this);
 
-        JLabel label = new JLabel(resizedIcon);
-        label.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        label.setSize(label.getPreferredSize());
-        label.setLocation(weight, weight);
-        ImageMouseHandler imageMouseHandler = new ImageMouseHandler();
-        label.addMouseListener(imageMouseHandler);
-        label.addMouseMotionListener(imageMouseHandler);
-        add(label, 0);
-        images.add(label);
+        add(image, DRAG_LAYER);
+        images.add(image);
+        image.requestFocus();
         repaint();
     }
 
-    // https://stackoverflow.com/questions/27915214/how-can-i-drag-images-with-the-mouse-cursor-in-java-gui
-    private class ImageMouseHandler extends MouseAdapter{
-        private Point offset;
-
-        @Override
-        public void mousePressed(MouseEvent e) {
-            JLabel label = (JLabel) e.getComponent();
-            moveToFront(label);
-            offset = e.getPoint();
-        }
-
-        @Override
-        public void mouseDragged(MouseEvent e) {
-            int x = e.getPoint().x - offset.x;
-            x -= x % size;
-            int y = e.getPoint().y - offset.y;
-            y -= y % size;
-            Component component = e.getComponent();
-            Point location = component.getLocation();
-            location.x += x;
-            location.y += y;
-            component.setLocation(location);
-        }
+    public void removeImage(MazeImageContainer image){
+        images.remove(image);
+        this.remove(image);
+        repaint();
+        revalidate();
     }
+//    // https://stackoverflow.com/questions/27915214/how-can-i-drag-images-with-the-mouse-cursor-in-java-gui
+//    private class ImageMouseHandler extends MouseAdapter{
+//        private Point offset;
+//
+//        @Override
+//        public void mouseClicked(MouseEvent e) {
+//            super.mouseClicked(e);
+//            JLabel label = (JLabel) e.getComponent();
+//
+//        }
+//
+//        @Override
+//        public void mousePressed(MouseEvent e) {
+//            JLabel label = (JLabel) e.getComponent();
+//            moveToFront(label);
+//            offset = e.getPoint();
+//        }
+//
+//        @Override
+//        public void mouseDragged(MouseEvent e) {
+//            int x = e.getPoint().x - offset.x;
+//            x -= x % size;
+//            int y = e.getPoint().y - offset.y;
+//            y -= y % size;
+//            Component component = e.getComponent();
+//            Point location = component.getLocation();
+//            location.x += x;
+//            location.y += y;
+//            component.setLocation(location);
+//        }
+//    }
 //    private void showImages(Graphics2D g){
 //        images.forEach(entry -> {
 //            AssetDataModel model = entry.getKey();
