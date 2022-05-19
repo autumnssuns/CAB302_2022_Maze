@@ -19,7 +19,6 @@ public class DFSGenerator extends Generator {
         visited = new ArrayList<>();
         int startRow = rnd.nextInt(maze.getSize(0));
         int startCol = rnd.nextInt(maze.getSize(1));
-        System.out.println(startRow + " " + startCol);
         MazeNode startNode = maze.get(startRow, startCol);
         pathStack.add(startNode);
         visited.add(startNode);
