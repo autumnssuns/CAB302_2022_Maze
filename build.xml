@@ -1,4 +1,4 @@
-<project name="exercise" basedir=".">
+<project name="exercise" basedir="." default="build">
     <property name="program.dir" value="build/program/" />
     <property name="base.dir" value="build/main" />
     <property name="test.dir" value="build/test" />
