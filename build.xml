@@ -1,0 +1,76 @@
+<project name="exercise" basedir=".">
+    <property name="program.dir" value="build/program/" />
+    <property name="base.dir" value="build/main" />
+    <property name="test.dir" value="build/test" />
+    <property name="test.result.dir" value="build/test-report/" />
+
+    <property name="junitJar" value="lib/junit-jupiter-api-5.8.2.jar" />
+    <property name="junitPlatformJar" value="lib/junit-platform-commons-1.8.2.jar" />
+    <property name="opentestJar" value="lib/opentest4j-1.2.0.jar" />
+    <property name="apiguardianJar" value="lib/apiguardian-api-1.1.2.jar" />
+
+    <target name="prepare">
+        <mkdir dir="${base.dir}" />
+        <mkdir dir="${test.dir}" />
+        <mkdir dir="${test.result.dir}" />
+    </target>
+
+    <path id="test.classpath">
+        <pathelement path="${test.dir}"/>
+        <pathelement path="build/main/"/>
+        <fileset dir="${ant.home}/lib" includes="*.jar" />
+        <fileset dir="${test.dir}">
+            <include name="**/*.class" />
+        </fileset>
+    </path>
+
+    <target name="compile" depends="prepare" description="Compile source" >
+        <javac destdir="build/main" srcdir="src" includeantruntime="false"/>
+        <javac destdir="${test.dir}" srcdir="test" classpath="${base.dir}:${junitJar}:${junitPlatformJar}:${opentestJar}:${apiguardianJar}" classpathref="test.classpath" includeantruntime="false"/>
+    </target>
+
+    <target name="test" depends="compile" description="Run JUnit">
+        <junitlauncher printSummary="true" failureProperty="junit.failure">
+            <classpath>
+                <pathelement path="${test.dir}:${base.dir}" />
+                <pathelement path="${base.dir}:${junitJar}:${junitPlatformJar}:${opentestJar}:${apiguardianJar}" />
+            </classpath>
+            <testclasses outputDir="${test.result.dir}">
+                <fileset dir="${test.dir}"/>
+                <listener type="legacy-xml"/>
+            </testclasses>
+        </junitlauncher>
+        <fail if="junit.failure" message="junit tests failed - aborting"/>
+    </target>
+
+    <target name="build" depends="test" >
+        <path id="build.classpath">
+            <fileset dir="lib">
+                <include name="*.jar" />
+            </fileset>
+        </path>
+
+        <!-- convert classpath to a flat list/string for use in manifest task -->
+        <pathconvert property="mf.classpath" pathsep=" ">
+            <path refid="build.classpath" />
+            <flattenmapper />
+        </pathconvert>
+        <echo>Retrieving dependencies ${mf.classpath}</echo>
+
+        <jar destfile="${program.dir}MazeGen.jar" basedir="${base.dir}">
+            <manifest>
+                <!-- Who is building this jar? -->
+                <attribute name="Built-By" value="Dang Khuong Tran"/>
+                <!-- Information about the program itself -->
+                <attribute name="Implementation-Vendor" value="QUT"/>
+                <attribute name="Implementation-Title" value="CAB302 Exercise"/>
+                <attribute name="Implementation-Version" value="1.0.0"/>
+                <!-- The application entry point -->
+                <attribute name="Main-Class" value="Main"/>
+                <attribute name="Class-Path" value="${mf.classpath}" />
+            </manifest>
+            <zipgroupfileset dir="lib" includes="*.jar"/>
+            <zipfileset dir="." includes="*.props"/>
+        </jar>
+    </target>
+</project>

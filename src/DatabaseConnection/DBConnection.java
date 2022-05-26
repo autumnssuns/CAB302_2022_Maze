@@ -1,8 +1,6 @@
 package DatabaseConnection;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -23,7 +21,7 @@ public class DBConnection {
         FileInputStream in = null;
         try {
             System.out.println("Working Directory = " + System.getProperty("user.dir"));
-            in = new FileInputStream("src/db.props");
+            in = new FileInputStream("db.props");
             props.load(in);
             in.close();
 
@@ -39,7 +37,20 @@ public class DBConnection {
         } catch (SQLException sqle) {
             System.err.println(sqle);
         } catch (FileNotFoundException fnfe) {
-            System.err.println(fnfe);
+            try (OutputStream output = new FileOutputStream("db.props")){
+                Properties prop = new Properties();
+
+                prop.setProperty("jdbc.url", "jdbc:sqlite:cab302.db");
+                prop.setProperty("jdbc.username", "");
+                prop.setProperty("jdbc.password", "");
+                prop.setProperty("jdbc.schema", "");
+
+                prop.store(output, null);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         } catch (IOException ex) {
             ex.printStackTrace();
         }

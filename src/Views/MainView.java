@@ -47,8 +47,9 @@ public class MainView extends JFrame implements KeyListener, Runnable {
     }
 
     public void createGUI(){
+        setSize(1080, 720);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
-        setUndecorated(true);
+//        setUndecorated(true);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setFocusable(true);
         addKeyListener(this);
