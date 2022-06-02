@@ -85,7 +85,10 @@ public class MazeImageContainer extends JPanel {
         imageContainer.setBounds(RESIZE_WEIGHT, RESIZE_WEIGHT, image.getIconWidth(), image.getIconHeight());
         this.setBounds(this.getBounds().x - RESIZE_WEIGHT, this.getBounds().y - RESIZE_WEIGHT, this.getBounds().width, this.getBounds().height);
         this.setOpaque(false);
+
+        container.blockRegion(this.getLocation().x, this.getLocation().y, this.getWidth(), this.getHeight());
     }
+
 
     private void updateResizeLocations(){
         resizePanels.get("N").setLocation((image.getIconWidth() - RESIZE_SIZE) / 2 + RESIZE_WEIGHT, 0);
@@ -206,6 +209,7 @@ public class MazeImageContainer extends JPanel {
             location.x += x;
             location.y += y;
             component.setLocation(location);
+            container.blockRegion(component.getLocation().x, component.getLocation().y, component.getWidth(), component.getHeight());
         }
     }
 

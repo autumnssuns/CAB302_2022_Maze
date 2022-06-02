@@ -242,6 +242,29 @@ public class MazePartialView extends PartialView implements ActionListener {
         }
     }
 
+    public void blockRegion(int x, int y, int width, int height){
+        ArrayList<BorderButton> blocked = new ArrayList<>();
+        for (BorderButton b : vButtons){
+            Point location = b.getLocation();
+//            if (location.x - weight>= x && location.x < x + width && location.y - b.getHeight() >= y && location.y < y + height){
+//                blocked.add(b);
+//            }
+            if ((location.x >= x - weight && location.x <= x + width) && (location.y >= y - weight && location.y < y + height - weight)){
+                blocked.add(b);
+            }
+        }
+        for (BorderButton b : hButtons){
+            Point location = b.getLocation();
+//            if (location.x - weight>= x && location.x < x + width && location.y - b.getHeight() >= y && location.y < y + height){
+//                blocked.add(b);
+//            }
+            if ((location.x >= x - weight && location.x < x + width - weight) && (location.y >= y - weight && location.y < y + height)){
+                blocked.add(b);
+            }
+        }
+        blocked.forEach(b -> b.paintBorder(true));
+    }
+
     public void addImage(AssetDataModel assetDataModel){
 //        AbstractMap.SimpleEntry<AssetDataModel, ArrayList<Integer>> entry = new AbstractMap.SimpleEntry<>(assetDataModel, new ArrayList<>(List.of(new Integer[]{0, 0})));
 //        images.add(entry);
