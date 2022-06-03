@@ -33,7 +33,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: MazeGen
-        path: buid/program/MazeGen.jar
+        path: /home/runner/work/CAB302_2022_Maze/CAB302_2022_Maze/build/program/MazeGen.jar
     - name: Download artifacts
       uses: actions/download-artifact@v3
       with:
