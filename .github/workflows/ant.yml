@@ -21,7 +21,20 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
-    - name: Install Ant Optional
-      run: sudo apt-get install ant-optional
-    - name: Build with Ant
+    - name: Prepare output directories
+      run: ant -debug -lib lib -noinput -buildfile build.xml prepare
+    - name: Compile source code
       run: ant -debug -lib lib -noinput -buildfile build.xml compile
+    - name: Running tests
+      run: ant -debug -lib lib -noinput -buildfile build.xml test
+    - name: Package artifacts
+      run: ant -debug -lib lib -noinput -buildfile build.xml build
+    - name: Save artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: MazeGen
+        path: buid/program/MazeGen.jar
+    - name: Download artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: MazeGen
