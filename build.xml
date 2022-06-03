@@ -1,4 +1,4 @@
-<project name="exercise" basedir="." default="build">
+<project name="exercise" basedir=".">
     <property name="program.dir" value="build/program/" />
     <property name="base.dir" value="build/main" />
     <property name="test.dir" value="build/test" />
@@ -13,6 +13,7 @@
         <mkdir dir="${base.dir}" />
         <mkdir dir="${test.dir}" />
         <mkdir dir="${test.result.dir}" />
+        <mkdir dir="${program.dir}" />
     </target>
 
     <path id="test.classpath">
