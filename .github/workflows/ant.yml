@@ -21,5 +21,7 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
+    - name: Install Ant Optional
+      run: sudo apt-get install ant-optional
     - name: Build with Ant
-      run: ant -lib lib -noinput -buildfile build.xml
+      run: ant -debug -lib /home/runner/work/CAB302_2022_Maze/CAB302_2022_Maze/lib/ -noinput -buildfile build.xml
