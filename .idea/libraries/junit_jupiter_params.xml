@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="junit.jupiter.params" type="repository">
+    <properties maven-id="org.junit.jupiter:junit-jupiter-params:5.8.2" />
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/junit-jupiter-params-5.8.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

@@ -31,5 +31,8 @@
     <orderEntry type="library" exported="" name="xerial.sqlite.jdbc" level="project" />
     <orderEntry type="library" exported="" name="junit.jupiter" level="project" />
     <orderEntry type="library" exported="" name="junit.jupiter.params" level="project" />
+    <orderEntry type="library" name="ant-junitlauncher-1.10.12" level="project" />
+    <orderEntry type="library" name="apache.ant.junitlauncher" level="project" />
+    <orderEntry type="library" name="org.apache.ant:ant-junitlauncher:1.10.12" level="project" />
   </component>
 </module>

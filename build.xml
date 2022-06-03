@@ -9,13 +9,6 @@
     <property name="opentestJar" value="lib/opentest4j-1.2.0.jar" />
     <property name="apiguardianJar" value="lib/apiguardian-api-1.1.2.jar" />
 
-    <target name="prepare">
-        <mkdir dir="${base.dir}" />
-        <mkdir dir="${test.dir}" />
-        <mkdir dir="${test.result.dir}" />
-        <mkdir dir="${program.dir}" />
-    </target>
-
     <path id="test.classpath">
         <pathelement path="${test.dir}"/>
         <pathelement path="build/main/"/>
@@ -25,17 +18,23 @@
         </fileset>
     </path>
 
-    <taskdef name="junit"
-         classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask">
-        <classpath refid="test.classpath"/>
-    </taskdef>
+    <target name="prepare">
+        <mkdir dir="${base.dir}" />
+        <mkdir dir="${test.dir}" />
+        <mkdir dir="${test.result.dir}" />
+        <mkdir dir="${program.dir}" />
+    </target>
 
     <target name="compile" depends="prepare" description="Compile source" >
-        <javac destdir="build/main" srcdir="src" includeantruntime="false"/>
-        <javac destdir="${test.dir}" srcdir="test" classpath="${base.dir}:${junitJar}:${junitPlatformJar}:${opentestJar}:${apiguardianJar}" classpathref="test.classpath" includeantruntime="false"/>
+        <javac destdir="${base.dir}" srcdir="src" includeantruntime="false"/>
+        <javac destdir="${test.dir}" srcdir="test" classpath="${base.dir}:${junitJar}:${junitPlatformJar}:${opentestJar}:${apiguardianJar}" includeantruntime="false"/>
     </target>
 
     <target name="test" depends="compile" description="Run JUnit">
+        <taskdef name="junit"
+             classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask">
+            <classpath refid="test.classpath"/>
+        </taskdef>
         <junitlauncher printSummary="true" failureProperty="junit.failure">
             <classpath>
                 <pathelement path="${test.dir}:${base.dir}" />
