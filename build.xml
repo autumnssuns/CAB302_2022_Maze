@@ -24,6 +24,11 @@
         </fileset>
     </path>
 
+    <taskdef name="junit"
+         classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask">
+        <classpath refid="test.classpath"/>
+    </taskdef>
+
     <target name="compile" depends="prepare" description="Compile source" >
         <javac destdir="build/main" srcdir="src" includeantruntime="false"/>
         <javac destdir="${test.dir}" srcdir="test" classpath="${base.dir}:${junitJar}:${junitPlatformJar}:${opentestJar}:${apiguardianJar}" classpathref="test.classpath" includeantruntime="false"/>
