@@ -24,4 +24,4 @@ jobs:
     - name: Install Ant Optional
       run: sudo apt-get install ant-optional
     - name: Build with Ant
-      run: ant -debug -lib lib -noinput -buildfile build.xml
+      run: ant -debug -lib lib -noinput -buildfile build.xml -compile
