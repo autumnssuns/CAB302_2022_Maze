@@ -13,6 +13,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.List;
 import java.util.stream.IntStream;
 
 public class MazePartialView extends PartialView implements ActionListener {
@@ -246,22 +247,17 @@ public class MazePartialView extends PartialView implements ActionListener {
         ArrayList<BorderButton> blocked = new ArrayList<>();
         for (BorderButton b : vButtons){
             Point location = b.getLocation();
-//            if (location.x - weight>= x && location.x < x + width && location.y - b.getHeight() >= y && location.y < y + height){
-//                blocked.add(b);
-//            }
             if ((location.x >= x - weight && location.x <= x + width) && (location.y >= y - weight && location.y < y + height - weight)){
                 blocked.add(b);
             }
         }
         for (BorderButton b : hButtons){
             Point location = b.getLocation();
-//            if (location.x - weight>= x && location.x < x + width && location.y - b.getHeight() >= y && location.y < y + height){
-//                blocked.add(b);
-//            }
             if ((location.x >= x - weight && location.x < x + width - weight) && (location.y >= y - weight && location.y < y + height)){
                 blocked.add(b);
             }
         }
+        nodeButtons.forEach(NodeButton::repaintWalls);
         blocked.forEach(b -> b.paintBorder(true));
     }
 
@@ -419,8 +415,8 @@ public class MazePartialView extends PartialView implements ActionListener {
     }
 
     public void toggleGrid(boolean state){
-        vButtons.forEach(x -> x.setBorderPainted(state));
-        hButtons.forEach(x -> x.setBorderPainted(state));
+        vButtons.parallelStream().forEach(x -> x.setBorderPainted(state));
+        hButtons.parallelStream().forEach(x -> x.setBorderPainted(state));
     }
 
     public Maze getMaze() {
