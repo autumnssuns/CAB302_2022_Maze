@@ -1,7 +1,7 @@
 <project name="exercise" basedir=".">
     <property name="program.dir" value="build/program/" />
-    <property name="base.dir" value="build/main" />
-    <property name="test.dir" value="build/test" />
+    <property name="base.dir" value="build/main/" />
+    <property name="test.dir" value="build/test/" />
     <property name="test.result.dir" value="build/test-report/" />
 
     <property name="junitJar" value="lib/junit-jupiter-api-5.8.2.jar" />
