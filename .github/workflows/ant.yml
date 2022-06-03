@@ -22,4 +22,4 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
     - name: Build with Ant
-      run: ant -lib /home/runner/work/CAB302_2022_Maze/CAB302_2022_Maze/lib/ -noinput -buildfile build.xml
+      run: ant -debug -lib /home/runner/work/CAB302_2022_Maze/CAB302_2022_Maze/lib/ -noinput -buildfile build.xml
