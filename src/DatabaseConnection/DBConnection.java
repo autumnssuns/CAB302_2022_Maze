@@ -17,43 +17,47 @@ public class DBConnection {
      * Constructor intializes the connection.
      */
     private DBConnection() {
-        Properties props = new Properties();
-        FileInputStream in = null;
         try {
-            System.out.println("Working Directory = " + System.getProperty("user.dir"));
-            in = new FileInputStream("db.props");
-            props.load(in);
-            in.close();
-
-            // specify the data source, username and password
-            String url = props.getProperty("jdbc.url");
-            String username = props.getProperty("jdbc.username");
-            String password = props.getProperty("jdbc.password");
-            String schema = props.getProperty("jdbc.schema");
-
-            // get a connection
-            instance = DriverManager.getConnection(url + "/" + schema, username,
-                    password);
+            loadInstance();
         } catch (SQLException sqle) {
             System.err.println(sqle);
         } catch (FileNotFoundException fnfe) {
             try (OutputStream output = new FileOutputStream("db.props")){
-                Properties prop = new Properties();
+                Properties props = new Properties();
 
-                prop.setProperty("jdbc.url", "jdbc:sqlite:cab302.db");
-                prop.setProperty("jdbc.username", "");
-                prop.setProperty("jdbc.password", "");
-                prop.setProperty("jdbc.schema", "");
+                props.setProperty("jdbc.url", "jdbc:sqlite:cab302.db");
+                props.setProperty("jdbc.username", "");
+                props.setProperty("jdbc.password", "");
+                props.setProperty("jdbc.schema", "");
 
-                prop.store(output, null);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
+                props.store(output, null);
+                loadInstance();
+            } catch (IOException | SQLException e) {
                 e.printStackTrace();
             }
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+    }
+
+    private void loadInstance() throws IOException, SQLException {
+        Properties props = new Properties();
+        FileInputStream in = null;
+
+        System.out.println("Working Directory = " + System.getProperty("user.dir"));
+        in = new FileInputStream("db.props");
+        props.load(in);
+        in.close();
+
+        // specify the data source, username and password
+        String url = props.getProperty("jdbc.url");
+        String username = props.getProperty("jdbc.username");
+        String password = props.getProperty("jdbc.password");
+        String schema = props.getProperty("jdbc.schema");
+
+        // get a connection
+        instance = DriverManager.getConnection(url + "/" + schema, username,
+                password);
     }
 
     /**
