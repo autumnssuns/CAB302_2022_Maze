@@ -4,7 +4,7 @@ defined in the [assignment specification](Assignment%20Specification.pdf).
 
 ## Requirements
 Due to the author's having multiple other commitments, this project was not finished in due time (10/6/2022).
-The following table lists the completion status of the software.
+The following table lists the completion status of the software, with 19 out of 24 requirements satisfied.
 | Number | Title                 | Description                                        | Status    |
 |--------|-----------------------|----------------------------------------------------|-----------|
 | 1      | Maze Creation         | Generate an empty maze                             | Done      |
