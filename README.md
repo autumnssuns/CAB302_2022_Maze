@@ -4,9 +4,12 @@ defined in the [assignment specification](Assignment%20Specification.pdf).
 
 ## Installation Instruction:
 Ensure JDK 17 is installed on the machine trying to run the .jar file. All other dependencies are bundled together.
+
 To run the .jar file, either use the command line, in the same directory:
 `-java -jar MazeGen.jar`
+
 Or double click the MazeGen.jar.
+
 A database configurations (`db.props`) and database file (`cab302.db`) are created on run. 
 
 ## Requirements
