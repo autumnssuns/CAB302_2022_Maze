@@ -2,6 +2,13 @@
 A maze generator is implemented in Java, from the user stories
 defined in the [assignment specification](Assignment%20Specification.pdf).
 
+## Installation Instruction:
+Ensure JDK 17 is installed on the machine trying to run the .jar file. All other dependencies are bundled together.
+To run the .jar file, either use the command line, in the same directory:
+`-java -jar MazeGen.jar`
+Or double click the MazeGen.jar.
+A database configurations (`db.props`) and database file (`cab302.db`) are created on run. 
+
 ## Requirements
 Due to the author's having multiple other commitments, this project was not finished in due time (10/6/2022).
 The following table lists the completion status of the software, with 19 out of 24 requirements satisfied.
