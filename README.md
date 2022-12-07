@@ -4,6 +4,8 @@ defined in the [assignment specification](Assignment%20Specification.pdf).
 
 __[Demo video](http://www.youtube.com/watch?v=vdNQWPmg26w "Maze Generation Demo")__
 
+[![Sorting Algorithms Visualisation Demo](http://img.youtube.com/vi/vdNQWPmg26w/0.jpg)](http://www.youtube.com/watch?v=vdNQWPmg26w "Maze Generation Demo")
+
 ## Installation Instruction:
 Ensure JDK 17 is installed on the machine trying to run the .jar file. All other dependencies are bundled together.
 
