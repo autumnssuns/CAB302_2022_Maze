@@ -2,6 +2,8 @@
 A maze generator is implemented in Java, from the user stories
 defined in the [assignment specification](Assignment%20Specification.pdf).
 
+__[Demo video](http://www.youtube.com/watch?v=vdNQWPmg26w "Maze Generation Demo")__
+
 ## Installation Instruction:
 Ensure JDK 17 is installed on the machine trying to run the .jar file. All other dependencies are bundled together.
 
